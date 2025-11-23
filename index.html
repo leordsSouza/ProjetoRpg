@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Armagedon RPG</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header id="cabecalho">
+        <h1>Armagedon</h1>
+    </header>
+
+    <main id="ficha-container">
+
+        <section id="info-status">
+            <h2>Recursos</h2>
+            
+            <ul id="recursos-lista">
+                
+                <li class="recursos-item">
+                    <span class="coluna-status status-vida">VIDA</span>
+                    
+                    <div class="controle-recurso">
+                        <button class="btn-seta diminui" id="btn-vida-menos">&#9664;</button> 
+                        
+                        <div class="barra-container">
+                            <div class="barra-preenchimento" id="vida-bar-fill"></div>
+                            <div class="texto-sobreposto">
+                                <span id="pv-atual">10</span> / <span id="pv-max">10</span>
+                            </div>
+                        </div>
+
+                        <button class="btn-seta aumenta" id="btn-vida-mais">&#9654;</button>
+                    </div>
+
+                    <span class="coluna-temp">-</span>
+                </li>
+
+                <li class="recursos-item">
+                    <span class="coluna-status status-san">SANIDADE</span>
+
+                    <div class="controle-recurso">
+                        <button class="btn-seta diminui" id="btn-san-menos">&#9664;</button>
+
+                        <div class="barra-container">
+                            <div class="barra-preenchimento" id="san-bar-fill"></div>
+                            <div class="texto-sobreposto">
+                                <span id="san-atual">20</span> / <span id="san-max">20</span>
+                            </div>
+                        </div>
+
+                        <button class="btn-seta aumenta" id="btn-san-mais">&#9654;</button>
+                    </div>
+
+                    <span class="coluna-temp">-</span>
+                </li>
+
+                <li class="recursos-item">
+                    <span class="coluna-status status-pe">PE</span>
+                    
+                    <div class="controle-recurso">
+                        <button class="btn-seta diminui" id="btn-pe-menos">&#9664;</button>
+                        
+                        <div class="barra-container">
+                            <div class="barra-preenchimento" id="pe-bar-fill"></div>
+                            <div class="texto-sobreposto">
+                                <span id="pe-atual">5</span> / <span id="pe-max">5</span>
+                            </div>
+                        </div>
+
+                        <button class="btn-seta aumenta" id="btn-pe-mais">&#9654;</button>
+                    </div>
+
+                    <span class="coluna-temp">-</span>
+                </li>
+
+                <li class="recursos-item">
+                    <span class="coluna-status status-ar">ARCANO</span>
+                    
+                    <div class="controle-recurso">
+                        <button class="btn-seta diminui" id="btn-ar-menos">&#9664;</button>
+                        
+                        <div class="barra-container">
+                            <div class="barra-preenchimento" id="ar-bar-fill"></div>
+                            <div class="texto-sobreposto">
+                                <span id="ar-atual">15</span> / <span id="ar-max">15</span>
+                            </div>
+                        </div>
+
+                        <button class="btn-seta aumenta" id="btn-ar-mais">&#9654;</button>
+                    </div>
+
+                    <span class="coluna-temp">-</span>
+                </li>
+
+            </ul>
+        </section>
+
+        <section id="fundamentos-area">
+            <h2>FUNDAMENTOS</h2>
+            </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
