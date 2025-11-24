@@ -6,6 +6,10 @@
 // --- 1. SELEÇÃO DOS ELEMENTOS (O "Pointer" do DOM) ---
 // Pegamos tudo que vamos precisar manipular logo no começo.
 
+// DADOS DO PERFIL
+const nomeInput = document.getElementById('nome-char');
+const classeInput = document.getElementById('classe-char');
+
 // VIDA
 const vidaAtualEl = document.getElementById('pv-atual');
 const vidaMaxEl = document.getElementById('pv-max');
@@ -143,5 +147,23 @@ btnArMenos.addEventListener('click', function() {
 btnArMais.addEventListener('click', function() {
     alterarStatus(arAtualEl, arMaxEl, barraAr, 1, "#2b59c3", "#10224a");
 });
+
+// --- EVENTOS DE PERFIL (Salvar Texto) ---
+
+// Salvar Nome
+nomeInput.addEventListener('input', function() {
+    localStorage.setItem('nome-char', nomeInput.value);
+});
+
+// Salvar Classe
+classeInput.addEventListener('input', function() {
+    localStorage.setItem('classe-char', classeInput.value);
+});
+
+const nomeSalvo = localStorage.getItem('nome-char');
+    if (nomeSalvo) nomeInput.value = nomeSalvo;
+
+const classeSalva = localStorage.getItem('classe-char');
+    if (classeSalva) classeInput.value = classeSalva
 
 carregarDados();

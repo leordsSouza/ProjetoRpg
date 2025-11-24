@@ -45,6 +45,74 @@ h1, h2 {
     border-radius: 8px;
 }
 
+.perfil-container {
+    display: flex;             /* Ativa o alinhamento horizontal */
+    align-items: center;       /* Centraliza verticalmente (meio da foto) */
+    gap: 15px;                 /* Espaço entre a foto e o texto */
+    margin-bottom: 20px;       /* Empurra a lista de recursos para baixo */
+    padding-bottom: 15px;      /* Espaço interno */
+    border-bottom: 1px solid #333; /* Uma linha sutil separando do resto */
+}
+
+.avatar {
+    width: 80px;               /* Tamanho fixo */
+    height: 80px;
+    border-radius: 50%;        /* Faz ficar redonda */
+    object-fit: cover;         /* Garante que a imagem não fique esticada */
+    border: 2px solid #ff9900; /* Borda laranja do tema */
+}
+
+.perfil-dados h3 {
+    margin: 0;                 /* Remove margem padrão gigante do h3 */
+    font-size: 1.5rem;
+    color: #eee;
+}
+
+.perfil-dados span {
+    color: #aaa;               /* Cinza mais claro para dar contraste */
+    font-style: italic;
+}
+
+.input-fantasma {
+    background-color: rgba(255, 255, 255, 0.05); 
+    border-radius: 4px; 
+    padding: 2px 5px; 
+    border: none;
+    color: #eee;
+    width: 100%; /* Nota: Talvez precise diminuir um pouco se tiver padding, mas teste assim primeiro */
+    outline: none;
+    font-family: inherit;
+    transition: background-color 0.2s;
+}
+
+/* Estilo específico para o Nome (Grande e Bold) */
+.titulo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: block;          /* Garante que fique em linha própria */
+    margin-bottom: 5px;
+}
+
+/* Estilo específico para a Classe (Cinza e Itálico) */
+.subtitulo {
+    font-size: 1.2rem;
+    color: #aaa;
+    font-style: italic;
+}
+
+/* Feedback visual: Quando passar o mouse, mostra que é editável */
+.input-fantasma:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Fundo cinza bem clarinho */
+    border-radius: 4px;
+    cursor: text;
+}
+
+/* Feedback visual: Quando estiver digitando */
+.input-fantasma:focus {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-bottom: 2px solid #ff9900; /* Linha laranja embaixo */
+}
+
 /* ==================================================================
    3. COMPONENTE: LISTA DE RECURSOS
    ================================================================== */
