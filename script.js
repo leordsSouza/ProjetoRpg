@@ -167,3 +167,24 @@ const classeSalva = localStorage.getItem('classe-char');
     if (classeSalva) classeInput.value = classeSalva
 
 carregarDados();
+
+// --- SALVAR FUNDAMENTOS ---
+
+// Lista com os IDs dos inputs de atributos (confira se batem com seu HTML)
+// Exemplo: se no HTML você usou id="input-for", coloque 'input-for' aqui.
+const atributosIds = ['input-for', 'input-agi', 'input-int', 'input-pre', 'input-con', 'input-arc'];
+
+atributosIds.forEach(id => {
+    const input = document.getElementById(id);
+    
+    if (input) {
+        // 1. Carregar valor salvo (se existir)
+        const salvo = localStorage.getItem(id);
+        if (salvo) input.value = salvo;
+
+        // 2. Salvar sempre que digitar algo
+        input.addEventListener('input', () => {
+            localStorage.setItem(id, input.value);
+        });
+    }
+});

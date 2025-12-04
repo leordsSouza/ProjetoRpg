@@ -4,8 +4,9 @@
 body {
     background-color: #111;
     color: #eee;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Reenie Beanie', sans-serif;
     margin: 0;
+    font-size: 1.5rem;
 }
 
 h1, h2 {
@@ -200,3 +201,186 @@ h1, h2 {
 #ar-bar-fill { background-color: #0066ff; } 
 #pe-bar-fill { background-color: #00e5ff; }
 #ar-bar-fill { background-color: #2b59c3; }
+
+/* --- ÁREA DE FUNDAMENTOS --- */
+
+#fundamentos-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px; 
+}
+
+.fundamentos-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; 
+    grid-template-rows: 1fr 3fr 1fr;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    max-width: 400px; 
+}
+
+.attr-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.attr-label {
+    font-size: 1.5rem;
+    color: #aaa;
+    font-family: 'Reenie Beanie', cursive;
+}
+
+.attr-valor, .attr-input {
+    font-family: 'Reenie Beanie', cursive;
+    color: #ddd; /* Cor de giz */
+    font-size: 3.5rem; /* Bem grande para destacar */
+}
+
+.attr-input {
+    background: transparent;
+    border: none;
+    font-family: 'Reenie Beanie', cursive; /* A fonte rabiscada */
+    width: 60px; /* Largura suficiente para 2 dígitos */
+    text-align: center; /* Centraliza o número */
+    outline: none;
+}
+
+/* Remove as setinhas de aumentar/diminuir do navegador (Chrome/Safari) */
+.attr-input::-webkit-outer-spin-button,
+.attr-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* 1. Posicionar o Container no CENTRO da Grade */
+.simbolo-container {
+    grid-column: 2;
+    grid-row: 2;
+    position: relative;
+    
+    /* Alinha as linhas lado a lado */
+    display: flex;
+    align-items: center; /* Centraliza verticalmente (fio do horizonte) */
+    justify-content: center; /* Centraliza horizontalmente */
+    gap: 20px; /* Espaço entre cada linhazinha */
+    border: none; 
+    height: 100%;
+}
+
+
+.deitada {
+    position: absolute; /* Elas flutuam por cima das outras */
+    height: 200%;       /* Serão mais altas que o container */
+    width: 4px;         /* Um pouco mais finas */
+    /* Centraliza elas no meio do container antes de girar */
+    top: 50%;
+    left: 50%;
+    /* O translate aqui garante que o centro da linha fique no centro do container */
+    translate: -50% -50%; 
+    transform: rotate(90deg);
+}
+
+.cruzada-c1 {
+    position: absolute;
+    height: 200%;      
+    width: 4px;         
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%; 
+    transform: rotate(45deg);
+}
+
+.cruzada-c2 {
+    position: absolute; /* Elas flutuam por cima das outras */
+    height: 200%;       /* Serão mais altas que o container */
+    width: 2px;         /* Um pouco mais finas */
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%; 
+    transform: rotate(-45deg);
+}
+
+/* 2. Estilo Genérico da Linha (Todas iguais por enquanto) */
+.linha, .deitada, .cruzada-c1, .cruzada-c2 {
+    width: 5px; /* Espessura da linha */
+    
+    background-color: #000000; /* Cor do tema (Laranja) */
+    border-radius: 2px; /* Pontas arredondadas ficam mais bonitas */
+    box-shadow: none; 
+}
+
+/* As pontas (Bem pequenas) */
+.l-1, .l-13 {
+    height: 10%;
+}
+
+/* As intermediárias (Médias) */
+.l-2, .l-12 {
+    height: 20%;
+}
+
+/* As quase centrais (Altas) */
+.l-3, .l-11 {
+    height: 30%;
+}
+
+.l-4, .l-10 {
+    height: 40%;
+}
+
+.l-5, .l-9 {
+    height: 50%;
+}
+
+.l-6, .l-8 {
+    height: 60%;
+}
+
+.l-meio {
+    height: 100%;
+    transform: rotate(45deg)
+}
+
+/* O Mestre (A mais alta no centro) */
+.l-7 {
+    height: 90%; 
+}
+
+.for {
+    grid-column: 1;
+    grid-row: 2;
+    translate: 0% -30%; 
+}
+
+.arc {
+    grid-column: 1;
+    grid-row: 3;
+    translate: 5% -110%;
+}
+
+.pre {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.agi {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+.con {
+    grid-column: 3;
+    grid-row: 2;
+    translate: 70% -40%;
+}
+
+.int {
+    grid-column: 3;
+    grid-row: 3;
+    translate: 70% -110%;
+}
