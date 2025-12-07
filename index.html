@@ -7,163 +7,232 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Reenie+Beanie&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <aside id="sidebar">
+        <nav class="sidebar-nav">
+            <button class="menu-item ativo" id="btn-menu-ficha">
+                <i class="ph ph-user"></i><span class="tooltip">Ficha</span>
+            </button>
+            <button class="menu-item" id="btn-menu-inventario">
+                <i class="ph ph-backpack"></i><span class="tooltip">Inventário</span>
+            </button>
+            <button class="menu-item" id="btn-menu-magias">
+                <i class="ph ph-book-open"></i><span class="tooltip">Magias</span>
+            </button>
+             <button class="menu-item" id="btn-menu-config">
+                <i class="ph ph-gear"></i><span class="tooltip">Config</span>
+            </button>
+            <button class="menu-item" id="btn-menu-secret">
+                <i class="ph ph-spy"></i><span class="tooltip">???</span>
+            </button>
+        </nav>
+    </aside>
 
-    <header id="cabecalho">
-        <h1>Armagedon</h1>
-    </header>
-
-    <main id="ficha-container">
-
-        <section id="info-status">
-            <div class="perfil-container">
-                <img src="img/perfil.jpg" alt="Foto do Personagem" class="avatar">
-                
+    <div class="conteudo-principal">
+        <header id="cabecalho">
+            <h1>Armagedon</h1>
+        </header>
+        
+        <main id="ficha-container">
+            <section id="info-status">
+                <div class="perfil-container">
+                    <img src="img/perfil.jpg" alt="Foto do Personagem" class="avatar">
                     <div class="perfil-dados">
                         <input type="text" id="nome-char" class="input-fantasma titulo" placeholder="Nome do personagem">
-                        
                         <input type="text" id="classe-char" class="input-fantasma subtitulo" placeholder="Classe">
                     </div>
-            </div>
+                </div>
 
-            <h2>Recursos</h2>
-            
-            <ul id="recursos-lista">
+                <h2>Status</h2>
+                <ul id="recursos-lista">
+                    <li class="recursos-item">
+                        <span class="coluna-status status-vida">VIDA</span>
+                        <div class="controle-recurso">
+                            <button class="btn-seta diminui" id="btn-vida-menos">&#9664;</button>
+                            <div class="barra-container">
+                                <div class="barra-preenchimento" id="vida-bar-fill"></div>
+                                <div class="texto-sobreposto"><span id="pv-atual">10</span> / <span id="pv-max">10</span></div>
+                            </div>
+                            <button class="btn-seta aumenta" id="btn-vida-mais">&#9654;</button>
+                        </div>
+                        <input type="number" id="temp-vida" class="input-temp" placeholder="0" title="PV Temporário">
+                    </li>
+
+                    <li class="recursos-item">
+                        <span class="coluna-status status-san">SANIDADE</span>
+                        <div class="controle-recurso">
+                            <button class="btn-seta diminui" id="btn-san-menos">&#9664;</button>
+                            <div class="barra-container">
+                                <div class="barra-preenchimento" id="san-bar-fill"></div>
+                                <div class="texto-sobreposto"><span id="san-atual">20</span> / <span id="san-max">20</span></div>
+                            </div>
+                            <button class="btn-seta aumenta" id="btn-san-mais">&#9654;</button>
+                        </div>
+                        <input type="number" id="temp-san" class="input-temp" placeholder="0" title="Sanidade Temporária">
+                    </li>
+
+                    <li class="recursos-item">
+                        <span class="coluna-status status-pe">PE</span>
+                        <div class="controle-recurso">
+                            <button class="btn-seta diminui" id="btn-pe-menos">&#9664;</button>
+                            <div class="barra-container">
+                                <div class="barra-preenchimento" id="pe-bar-fill"></div>
+                                <div class="texto-sobreposto"><span id="pe-atual">5</span> / <span id="pe-max">5</span></div>
+                            </div>
+                            <button class="btn-seta aumenta" id="btn-pe-mais">&#9654;</button>
+                        </div>
+                        <input type="number" id="temp-pe" class="input-temp" placeholder="0" title="PE Temporário">
+                    </li>
+
+                    <li class="recursos-item">
+                        <span class="coluna-status status-ar">ARCANO</span>
+                        <div class="controle-recurso">
+                            <button class="btn-seta diminui" id="btn-ar-menos">&#9664;</button>
+                            <div class="barra-container">
+                                <div class="barra-preenchimento" id="ar-bar-fill"></div>
+                                <div class="texto-sobreposto"><span id="ar-atual">15</span> / <span id="ar-max">15</span></div>
+                            </div>
+                            <button class="btn-seta aumenta" id="btn-ar-mais">&#9654;</button>
+                        </div>
+                        <input type="number" id="temp-ar" class="input-temp" placeholder="0" title="Arcano Temporário">
+                    </li>
+                </ul>
+
+                <div class="registro-rapido-container">
+                    <h3>Registro Rápido</h3>
+                    <textarea id="anotacoes-rapidas" placeholder="..."></textarea>
+                </div>
+            </section>
+
+            <section id="fundamentos-area">
+                <div class="fundamentos-grid">
+                    <div></div><div></div><div></div>
+                    <div class="attr-box int">
+                        <span class="attr-label">INT</span>
+                        <input type="number" id="input-int" class="attr-input" value="0">
+                    </div>
+                    <div></div><div></div><div></div>
+                    <div class="attr-box con">
+                        <span class="attr-label">CON</span>
+                        <input type="number" id="input-con" class="attr-input" value="0">
+                    </div>
+                    <div></div><div></div>
+                    <div class="attr-box pre">
+                        <span class="attr-label">PRE</span>
+                        <input type="number" id="input-pre" class="attr-input" value="0">
+                    </div>
+                    <div class="attr-box for">
+                        <span class="attr-label">FOR</span>
+                        <input type="number" id="input-for" class="attr-input" value="0">
+                    </div>
+                    <div class="simbolo-container">
+                        <div class="linha l-1"></div> <div class="linha l-2"></div> <div class="linha l-3"></div>
+                        <div class="linha l-4"></div> <div class="linha l-5"></div> <div class="linha l-6"></div>
+                        <div class="linha l-7"></div> <div class="linha l-8"></div> <div class="linha l-9"></div>
+                        <div class="linha l-10"></div> <div class="linha l-11"></div> <div class="linha l-12"></div>
+                        <div class="linha l-13"></div> <div class="linha deitada"></div>
+                        <div class="linha cruzada-c1"></div> <div class="linha cruzada-c2"></div>
+                    </div>
+                    <div></div><div></div>
+                    <div class="attr-box agi">
+                        <span class="attr-label">AGI</span>
+                        <input type="number" id="input-agi" class="attr-input" value="0">
+                    </div>
+                    <div class="attr-box arc">
+                        <span class="attr-label">ARC</span>
+                        <input type="number" id="input-arc" class="attr-input" value="0">
+                    </div>
+                    <div></div>
+                </div>
+            </section>
+        </main>
+
+        <section id="inventario-container" class="escondido">
+            <div class="painel-dividido">
                 
-                <li class="recursos-item">
-                    <span class="coluna-status status-vida">VIDA</span>
-                    
-                    <div class="controle-recurso">
-                        <button class="btn-seta diminui" id="btn-vida-menos">&#9664;</button> 
+                <div class="coluna-esquerda">
+
+                    <div class="controles-inventario">
+                        <button id="btn-abrir-modal" class="btn-icone primario">
+                            <i class="ph ph-plus"></i>
+                        </button>
                         
-                        <div class="barra-container">
-                            <div class="barra-preenchimento" id="vida-bar-fill"></div>
-                            <div class="texto-sobreposto">
-                                <span id="pv-atual">10</span> / <span id="pv-max">10</span>
-                            </div>
-                        </div>
-
-                        <button class="btn-seta aumenta" id="btn-vida-mais">&#9654;</button>
+                        <button id="btn-modo-delete" class="btn-icone secundario">
+                            <i class="ph ph-trash"></i>
+                        </button>
                     </div>
 
-                    <span class="coluna-temp">-</span>
-                </li>
+                    <ul id="lista-inventario"></ul></div>
 
-                <li class="recursos-item">
-                    <span class="coluna-status status-san">SANIDADE</span>
+                <div class="coluna-meio"></div>
 
-                    <div class="controle-recurso">
-                        <button class="btn-seta diminui" id="btn-san-menos">&#9664;</button>
-
-                        <div class="barra-container">
-                            <div class="barra-preenchimento" id="san-bar-fill"></div>
-                            <div class="texto-sobreposto">
-                                <span id="san-atual">20</span> / <span id="san-max">20</span>
-                            </div>
-                        </div>
-
-                        <button class="btn-seta aumenta" id="btn-san-mais">&#9654;</button>
-                    </div>
-
-                    <span class="coluna-temp">-</span>
-                </li>
-
-                <li class="recursos-item">
-                    <span class="coluna-status status-pe">PE</span>
-                    
-                    <div class="controle-recurso">
-                        <button class="btn-seta diminui" id="btn-pe-menos">&#9664;</button>
+                    <div class="coluna-direita">
                         
-                        <div class="barra-container">
-                            <div class="barra-preenchimento" id="pe-bar-fill"></div>
-                            <div class="texto-sobreposto">
-                                <span id="pe-atual">5</span> / <span id="pe-max">5</span>
-                            </div>
+                        <div class="bloco-pericia">
+                            <h3>Mentais</h3>
+                            <div id="container-mentais" class="grid-pericias"></div>
                         </div>
 
-                        <button class="btn-seta aumenta" id="btn-pe-mais">&#9654;</button>
-                    </div>
-
-                    <span class="coluna-temp">-</span>
-                </li>
-
-                <li class="recursos-item">
-                    <span class="coluna-status status-ar">ARCANO</span>
-                    
-                    <div class="controle-recurso">
-                        <button class="btn-seta diminui" id="btn-ar-menos">&#9664;</button>
-                        
-                        <div class="barra-container">
-                            <div class="barra-preenchimento" id="ar-bar-fill"></div>
-                            <div class="texto-sobreposto">
-                                <span id="ar-atual">15</span> / <span id="ar-max">15</span>
+                        <div class="pericias-linha-inferior">
+                            
+                            <div class="metade-pericia">
+                                <h3>Físicas</h3>
+                                <div id="container-fisicas" class="lista-vertical"></div>
                             </div>
-                        </div>
 
-                        <button class="btn-seta aumenta" id="btn-ar-mais">&#9654;</button>
+                            <div class="metade-pericia">
+                                <h3>Maestria de Armas</h3>
+                                <div id="container-armas" class="lista-vertical"></div>
+                            </div>
+
+                        </div>
                     </div>
 
-                    <span class="coluna-temp">-</span>
-                </li>
-
-            </ul>
+            </div>
         </section>
 
-        <section id="fundamentos-area">
-    <div class="fundamentos-grid">
-        <div></div> <div></div> <div></div><div class="attr-box int">
-            <span class="attr-label">INT</span>
-            <input type="number" id="input-int" class="attr-input" value="0">
-        </div>
-        <div></div> <div></div> <div></div><div class="attr-box con">
-            <span class="attr-label">CON</span>
-            <input type="number" id="input-con" class="attr-input" value="0">
-        </div>
-        <div></div> <div></div><div class="attr-box pre">
-            <span class="attr-label">PRE</span>
-            <input type="number" id="input-pre" class="attr-input" value="0">
-        </div>
-
-        <div class="attr-box for">
-            <span class="attr-label">FOR</span>
-            <input type="number" id="input-for" class="attr-input" value="0">
-        </div>
-
-        <div class="simbolo-container">
-            <div class="linha l-1"></div>
-            <div class="linha l-2"></div>
-            <div class="linha l-3"></div>
-            <div class="linha l-4"></div> 
-            <div class="linha l-5"></div>
-            <div class="linha l-6"></div>
-            <div class="linha l-7"></div>
-            <div class="linha l-8"></div>
-            <div class="linha l-9"></div>
-            <div class="linha l-10"></div>
-            <div class="linha l-11"></div> 
-            <div class="linha l-12"></div>
-            <div class="linha l-13"></div>
-            <div class="linha deitada"></div>
-            <div class="linha cruzada-c1"></div>
-            <div class="linha cruzada-c2"></div>
-        </div>
-
-        <div></div> <div></div> <div class="attr-box agi">
-            <span class="attr-label">AGI</span>
-            <input type="number" id="input-agi" class="attr-input" value="0">
-        </div>
-
-        <div class="attr-box arc">
-            <span class="attr-label">ARC</span>
-            <input type="number" id="input-arc" class="attr-input" value="0">
-        </div>
-        <div></div> </div>
+        <section id="config-container" class="escondido">
+            <h2>Configurações</h2>
+            <div class="config-item">
+                <label class="switch-container">
+                    <span>Usar fonte legível (Arial) no Registro Rápido</span>
+                    <input type="checkbox" id="check-fonte-legivel">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
         </section>
 
-    </main>
+        <section id="magias-container" class="escondido">
+            <h2>Magias</h2>
+        </section>
 
+        <section id="secret-container" class="escondido">
+            <h2>secret</h2>
+        </section>
+    </div>
+
+        <div id="modal-item" class="modal-overlay escondido">
+        <div class="modal-caixa">
+            <h3>Novo Item</h3>
+            
+            <label>Nome:</label>
+            <input type="text" id="modal-nome" placeholder="Ex: Espada Longa">
+            
+            <label>Quantidade:</label>
+            <input type="number" id="modal-qtd" value="1">
+            
+            <label>Descrição:</label>
+            <textarea id="modal-desc" placeholder="Ex: Causa 1d8 de dano cortante..."></textarea>
+            
+            <div class="modal-botoes">
+                <button id="btn-cancelar-modal">Cancelar</button>
+                <button id="btn-salvar-modal">Salvar</button>
+            </div>
+        </div>
+        </div>
     <script src="script.js"></script>
 </body>
 </html>
