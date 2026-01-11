@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mestre - Olho de Deus</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Reenie+Beanie&family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        /* --- BASE --- */
+        * { box-sizing: border-box; }
+        body {
+            background-color: #050505;
+            color: #eee;
+            font-family: 'Segoe UI', sans-serif;
+            padding: 20px;
+            margin: 0;
+        }
+
+        /* --- HEADER --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'Reenie Beanie', cursive;
+            color: #ff9900;
+            font-size: 4rem;
+            margin: 0;
+            line-height: 0.8;
+            text-shadow: 0 0 10px rgba(255, 153, 0, 0.2);
+        }
+
+        .status-conexao {
+            font-size: 0.9rem;
+            color: #00ff88;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .ponto-pulse {
+            width: 10px; height: 10px;
+            background-color: #00ff88;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00ff88;
+            animation: pulse 2s infinite;
+        }
+
+        /* --- GRID PRINCIPAL (PERSONAGENS) --- */
+        .grid-mestre {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); /* Um pouco mais largo para caber 2 colunas dentro */
+            gap: 25px;
+        }
+
+        /* --- CARD DESIGN --- */
+        .char-card {
+            background-color: #0f0f0f;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+        }
+
+        .char-card:hover {
+            transform: translateY(-5px);
+            border-color: #ff9900;
+            box-shadow: 0 10px 20px rgba(255, 153, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 5px; /* Espaço entre os botões */
+        }
+
+        .char-nome {
+            font-family: 'Reenie Beanie', cursive;
+            font-size: 2.2rem;
+            color: #fff;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .btn-matar {
+            background: transparent;
+            border: 1px solid #333;
+            color: #444;
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 5px;
+            transition: 0.2s;
+        }
+
+        .btn-matar:hover {
+            color: #ff4d4d;
+            border-color: #ff4d4d;
+            background-color: rgba(255,0,0,0.1);
+        }
+
+        .btn-acao {
+            background: transparent;
+            border: 1px solid #333;
+            color: #444;
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 6px;
+            transition: 0.2s;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-acao.abrir:hover {
+            color: #00ccff;
+            border-color: #00ccff;
+            background-color: rgba(0, 204, 255, 0.1);
+        }
+
+        /* --- GRID DE STATUS (2x2) --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Duas colunas iguais */
+            gap: 10px;
+        }
+
+        /* CAIXINHA DE STATUS */
+        .stat-box {
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #252525;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 90px; /* Altura fixa para ficarem iguais */
+        }
+
+        .stat-icon { font-size: 1.4rem; margin-bottom: 2px; }
+        .stat-valor { font-size: 1.6rem; font-weight: bold; line-height: 1.1; }
+        .stat-label { font-size: 0.7rem; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+        .barra-divisor { width: 30px; height: 2px; background: #333; margin: 5px 0; }
+
+        /* CORES ESPECÍFICAS */
+        /* Vida (Vermelho) */
+        .vida .stat-icon, .vida .stat-valor { color: #ff4d4d; text-shadow: 0 0 10px rgba(255, 77, 77, 0.2); }
+        .vida { border-bottom: 2px solid #500; }
+
+        /* Sanidade (Azul) */
+        .san .stat-icon, .san .stat-valor { color: #00ccff; text-shadow: 0 0 10px rgba(0, 204, 255, 0.2); }
+        .san { border-bottom: 2px solid #005580; }
+
+        /* Esforço (Amarelo) */
+        .pe .stat-icon, .pe .stat-valor { color: #ffcc00; text-shadow: 0 0 10px rgba(255, 204, 0, 0.2); }
+        .pe { border-bottom: 2px solid #806600; }
+
+        /* Arcano (Roxo) */
+        .arcano .stat-icon, .arcano .stat-valor { color: #bf00ff; text-shadow: 0 0 10px rgba(191, 0, 255, 0.2); }
+        .arcano { border-bottom: 2px solid #5a0080; }
+
+        @keyframes pulse {
+            0% { opacity: 1; box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
+            70% { opacity: 0.7; box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
+            100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
+        }
+        
+        #loading-msg { width: 100%; text-align: center; color: #555; margin-top: 50px; font-style: italic;}
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Painel do Mestre</h1>
+        <div class="status-conexao">
+            <div class="ponto-pulse"></div>
+            <span>Sincronizando...</span>
+        </div>
+    </header>
+
+    <div id="grid-chars" class="grid-mestre">
+        <p id="loading-msg">Buscando fichas...</p>
+    </div>
+
+    <script>
+        const grid = document.getElementById('grid-chars');
+        let ultimoHashDados = '';
+
+        async function buscarDados() {
+            try {
+                const resposta = await fetch('/todas-fichas');
+                const fichas = await resposta.json();
+                
+                const hashAtual = JSON.stringify(fichas);
+                if (hashAtual === ultimoHashDados) return; 
+                ultimoHashDados = hashAtual;
+
+                grid.innerHTML = '';
+
+                if(fichas.length === 0) {
+                    grid.innerHTML = '<p style="text-align: center; width: 100%; color: #666;">Nenhuma ficha encontrada.</p>';
+                    return;
+                }
+
+                fichas.forEach(ficha => {
+                    criarCard(ficha);
+                });
+
+            } catch (erro) {
+                console.error(erro);
+            }
+        }
+
+function criarCard(ficha) {
+            const nome = ficha['nome-char'] || 'Desconhecido';
+            
+            // --- CÁLCULO DE MÁXIMOS (CORRIGIDO) ---
+            // 1. Tenta pegar os atributos para cálculo base
+            const vigor = parseInt(ficha['input-con']) || 0;
+            const intelecto = parseInt(ficha['input-int']) || 0;
+            const presenca = parseInt(ficha['input-pre']) || 0;
+
+            // 2. LÓGICA DE PRIORIDADE:
+            // Se tiver um valor editado manualmente ('max-pv'), usa ele.
+            // Se não tiver, usa a fórmula padrão (20 + Vigor).
+            const pvMax = ficha['max-pv'] ? parseInt(ficha['max-pv']) : (20 + vigor);
+            const sanMax = ficha['max-san'] ? parseInt(ficha['max-san']) : (12 + intelecto);
+            const peMax = ficha['max-pe'] ? parseInt(ficha['max-pe']) : (5 + presenca); // Ajustei base PE para 5 (padrão costuma ser maior que 2)
+            const arMax = ficha['max-ar'] ? parseInt(ficha['max-ar']) : 10;
+
+            // --- VALORES ATUAIS ---
+            const pv = parseInt(ficha['pv-atual']) || 0;
+            const san = parseInt(ficha['san-atual']) || 0;
+            const pe = parseInt(ficha['pe-atual']) || 0;
+            const arcano = parseInt(ficha['ar-atual']) || 0;
+
+            const card = document.createElement('div');
+            card.classList.add('char-card');
+
+            // Adiciona classe de 'morto' se vida for 0 (Opcional, visual extra)
+            if (pv <= 0) card.style.opacity = "0.7";
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <h3 class="char-nome">${nome}</h3>
+                    
+                    <div class="card-actions">
+                        <button class="btn-acao abrir" onclick="window.open('/index.html?char=${nome}', '_blank')" title="Abrir Ficha Completa">
+                            <i class="ph ph-arrow-square-out"></i>
+                        </button>
+
+                        <button class="btn-acao matar" onclick="deletarFicha('${nome}')" title="Excluir Ficha">
+                            <i class="ph ph-skull"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box vida">
+                        <i class="ph ph-heart-beat stat-icon"></i>
+                        <span class="stat-valor">${pv} <small style="font-size: 1rem; color: #777;">/ ${pvMax}</small></span>
+                        <span class="stat-label">Vida</span>
+                        <div class="barra-divisor" style="width: ${Math.min((pv/pvMax)*100, 100)}%; background: #ff4d4d;"></div>
+                    </div>
+
+                    <div class="stat-box san">
+                        <i class="ph ph-brain stat-icon"></i>
+                        <span class="stat-valor">${san} <small style="font-size: 1rem; color: #777;">/ ${sanMax}</small></span>
+                        <span class="stat-label">Sanidade</span>
+                         <div class="barra-divisor" style="width: ${Math.min((san/sanMax)*100, 100)}%; background: #00ccff;"></div>
+                    </div>
+
+                    <div class="stat-box pe">
+                        <i class="ph ph-lightning stat-icon"></i>
+                        <span class="stat-valor">${pe} <small style="font-size: 1rem; color: #777;">/ ${peMax}</small></span>
+                        <span class="stat-label">PE</span>
+                    </div>
+
+                    <div class="stat-box arcano">
+                        <i class="ph ph-shield-star stat-icon"></i>
+                        <span class="stat-valor">${arcano} <small style="font-size: 1rem; color: #777;">/ ${arMax}</small></span> 
+                        <span class="stat-label">Arcano</span>
+                    </div>
+                </div>
+            `;
+            
+            grid.appendChild(card);
+        }
+
+        async function deletarFicha(nome) {
+            if(confirm(`Tem certeza que deseja apagar a ficha de "${nome}"?`)) {
+                try {
+                    await fetch(`/deletar-ficha/${nome}`, { method: 'DELETE' });
+                    ultimoHashDados = ''; 
+                    buscarDados(); 
+                } catch (e) {
+                    alert("Erro ao deletar.");
+                }
+            }
+        }
+
+        buscarDados();
+        setInterval(buscarDados, 2000);
+    </script>
+</body>
+</html>

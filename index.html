@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Armagedon RPG</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Reenie+Beanie&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Reenie+Beanie&family=Segoe+UI:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <aside id="sidebar">
         <nav class="sidebar-nav">
             <button class="menu-item ativo" id="btn-menu-ficha">
@@ -22,11 +25,26 @@
             <button class="menu-item" id="btn-menu-magias">
                 <i class="ph ph-book-open"></i><span class="tooltip">Magias</span>
             </button>
-             <button class="menu-item" id="btn-menu-config">
+            <button class="menu-item" id="btn-menu-config">
                 <i class="ph ph-gear"></i><span class="tooltip">Config</span>
             </button>
+            
             <button class="menu-item" id="btn-menu-secret">
-                <i class="ph ph-spy"></i><span class="tooltip">???</span>
+                <div class="camada-correntes">
+                    <svg class="corrente-svg c1" viewBox="0 0 512 512">
+                        <path d="M120 200 C 120 180 140 160 160 160 L 350 160 C 370 160 390 180 390 200 L 390 310 C 390 330 370 350 350 350 L 160 350 C 140 350 120 330 120 310 Z M 140 200 L 140 310 C 140 320 150 330 160 330 L 350 330 C 360 330 370 320 370 310 L 370 200 C 370 190 360 180 350 180 L 160 180 C 150 180 140 190 140 200 Z" fill="#555"/>
+                        <path d="M100 100 L 180 100 L 180 140 L 100 140 Z M 330 100 L 410 100 L 410 140 L 330 140 Z" fill="#333"/>
+                        <path d="M100 370 L 180 370 L 180 410 L 100 410 Z M 330 370 L 410 370 L 410 410 L 330 410 Z" fill="#333"/>
+                        <path d="M230 100 L 280 100 L 280 410 L 230 410 Z" fill="#222"/>
+                    </svg>
+                    <svg class="corrente-svg c2" viewBox="0 0 512 512">
+                        <path d="M120 200 C 120 180 140 160 160 160 L 350 160 C 370 160 390 180 390 200 L 390 310 C 390 330 370 350 350 350 L 160 350 C 140 350 120 330 120 310 Z M 140 200 L 140 310 C 140 320 150 330 160 330 L 350 330 C 360 330 370 320 370 310 L 370 200 C 370 190 360 180 350 180 L 160 180 C 150 180 140 190 140 200 Z" fill="#555"/>
+                        <path d="M100 100 L 180 100 L 180 140 L 100 140 Z M 330 100 L 410 100 L 410 140 L 330 140 Z" fill="#333"/>
+                        <path d="M100 370 L 180 370 L 180 410 L 100 410 Z M 330 370 L 410 370 L 410 410 L 330 410 Z" fill="#333"/>
+                        <path d="M230 100 L 280 100 L 280 410 L 230 410 Z" fill="#222"/>
+                    </svg>
+                </div>
+                <i class="ph ph-skull"></i><span class="tooltip">Segredo</span>
             </button>
         </nav>
     </aside>
@@ -39,14 +57,22 @@
         <main id="ficha-container">
             <section id="info-status">
                 <div class="perfil-container">
-                    <img src="img/perfil.jpg" alt="Foto do Personagem" class="avatar">
+                    <input type="file" id="input-foto-char" accept="image/*" style="display: none;">
+                    <div class="foto-wrapper" onclick="document.getElementById('input-foto-char').click()" title="Alterar Foto">
+                        <img src="https://via.placeholder.com/150/000/333?text=?" id="char-foto" alt="Personagem">
+                        <div class="overlay-foto"><i class="ph ph-camera"></i></div>
+                    </div>
                     <div class="perfil-dados">
-                        <input type="text" id="nome-char" class="input-fantasma titulo" placeholder="Nome do personagem">
-                        <input type="text" id="classe-char" class="input-fantasma subtitulo" placeholder="Classe">
+                        <input type="text" id="nome-char" class="input-fantasma titulo" placeholder="Nome do Personagem">
+                        <input type="text" id="classe-char" class="input-fantasma subtitulo" placeholder="Classe / Origem">
                     </div>
                 </div>
 
-                <h2>Status</h2>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                    <h2 id="Status" style="margin:0;">Status</h2>
+                    <button id="btn-edit-maximos" class="btn-lapis" title="Editar Limites"><i class="ph ph-pencil-simple"></i></button>
+                </div>
+
                 <ul id="recursos-lista">
                     <li class="recursos-item">
                         <span class="coluna-status status-vida">VIDA</span>
@@ -58,11 +84,10 @@
                             </div>
                             <button class="btn-seta aumenta" id="btn-vida-mais">&#9654;</button>
                         </div>
-                        <input type="number" id="temp-vida" class="input-temp" placeholder="0" title="PV Temporário">
+                        <input type="number" id="temp-vida" class="input-temp" placeholder="0" title="Temp">
                     </li>
-
                     <li class="recursos-item">
-                        <span class="coluna-status status-san">SANIDADE</span>
+                        <span class="coluna-status status-san">SAN</span>
                         <div class="controle-recurso">
                             <button class="btn-seta diminui" id="btn-san-menos">&#9664;</button>
                             <div class="barra-container">
@@ -71,9 +96,8 @@
                             </div>
                             <button class="btn-seta aumenta" id="btn-san-mais">&#9654;</button>
                         </div>
-                        <input type="number" id="temp-san" class="input-temp" placeholder="0" title="Sanidade Temporária">
+                        <input type="number" id="temp-san" class="input-temp" placeholder="0" title="Temp">
                     </li>
-
                     <li class="recursos-item">
                         <span class="coluna-status status-pe">PE</span>
                         <div class="controle-recurso">
@@ -84,11 +108,10 @@
                             </div>
                             <button class="btn-seta aumenta" id="btn-pe-mais">&#9654;</button>
                         </div>
-                        <input type="number" id="temp-pe" class="input-temp" placeholder="0" title="PE Temporário">
+                        <input type="number" id="temp-pe" class="input-temp" placeholder="0" title="Temp">
                     </li>
-
                     <li class="recursos-item">
-                        <span class="coluna-status status-ar">ARCANO</span>
+                        <span class="coluna-status status-ar">ARC</span>
                         <div class="controle-recurso">
                             <button class="btn-seta diminui" id="btn-ar-menos">&#9664;</button>
                             <div class="barra-container">
@@ -97,29 +120,34 @@
                             </div>
                             <button class="btn-seta aumenta" id="btn-ar-mais">&#9654;</button>
                         </div>
-                        <input type="number" id="temp-ar" class="input-temp" placeholder="0" title="Arcano Temporário">
+                        <input type="number" id="temp-ar" class="input-temp" placeholder="0" title="Temp">
                     </li>
                 </ul>
 
                 <div class="registro-rapido-container">
                     <h3>Registro Rápido</h3>
-                    <textarea id="anotacoes-rapidas" placeholder="..."></textarea>
+                    <textarea id="anotacoes-rapidas" class="registro-texto" placeholder="Anotações de sessão..."></textarea>
                 </div>
             </section>
 
             <section id="fundamentos-area">
                 <div class="fundamentos-grid">
                     <div></div><div></div><div></div>
+                    
                     <div class="attr-box int">
                         <span class="attr-label">INT</span>
                         <input type="number" id="input-int" class="attr-input" value="0">
                     </div>
+                    
                     <div></div><div></div><div></div>
+                    
                     <div class="attr-box con">
                         <span class="attr-label">CON</span>
                         <input type="number" id="input-con" class="attr-input" value="0">
                     </div>
+                    
                     <div></div><div></div>
+                    
                     <div class="attr-box pre">
                         <span class="attr-label">PRE</span>
                         <input type="number" id="input-pre" class="attr-input" value="0">
@@ -128,6 +156,7 @@
                         <span class="attr-label">FOR</span>
                         <input type="number" id="input-for" class="attr-input" value="0">
                     </div>
+
                     <div class="simbolo-container">
                         <div class="linha l-1"></div> <div class="linha l-2"></div> <div class="linha l-3"></div>
                         <div class="linha l-4"></div> <div class="linha l-5"></div> <div class="linha l-6"></div>
@@ -136,7 +165,9 @@
                         <div class="linha l-13"></div> <div class="linha deitada"></div>
                         <div class="linha cruzada-c1"></div> <div class="linha cruzada-c2"></div>
                     </div>
+
                     <div></div><div></div>
+                    
                     <div class="attr-box agi">
                         <span class="attr-label">AGI</span>
                         <input type="number" id="input-agi" class="attr-input" value="0">
@@ -145,6 +176,7 @@
                         <span class="attr-label">ARC</span>
                         <input type="number" id="input-arc" class="attr-input" value="0">
                     </div>
+                    
                     <div></div>
                 </div>
             </section>
@@ -152,87 +184,187 @@
 
         <section id="inventario-container" class="escondido">
             <div class="painel-dividido">
-                
                 <div class="coluna-esquerda">
-
                     <div class="controles-inventario">
-                        <button id="btn-abrir-modal" class="btn-icone primario">
-                            <i class="ph ph-plus"></i>
-                        </button>
-                        
-                        <button id="btn-modo-delete" class="btn-icone secundario">
-                            <i class="ph ph-trash"></i>
-                        </button>
+                        <div class="grupo-botoes">
+                            <button id="btn-abrir-modal" class="btn-icone primario" title="Adicionar Item"><i class="ph ph-plus"></i></button>
+                            <button id="btn-modo-delete" class="btn-icone secundario" title="Excluir Itens"><i class="ph ph-trash"></i></button>
+                        </div>
+                        <div class="carga-display">
+                            <i class="ph ph-backpack"></i> <span id="carga-atual">0</span> / <span id="carga-max">5</span>
+                        </div>
                     </div>
-
-                    <ul id="lista-inventario"></ul></div>
+                    <ul id="lista-inventario"></ul>
+                </div>
 
                 <div class="coluna-meio"></div>
 
-                    <div class="coluna-direita">
-                        
-                        <div class="bloco-pericia">
-                            <h3>Mentais</h3>
-                            <div id="container-mentais" class="grid-pericias"></div>
+                <div class="coluna-direita">
+                    <div class="bloco-pericia">
+                        <h3>Mentais</h3>
+                        <div id="container-mentais" class="grid-pericias"></div>
+                    </div>
+                    <div class="pericias-linha-inferior">
+                        <div class="metade-pericia">
+                            <h3>Físicas</h3>
+                            <div id="container-fisicas" class="lista-vertical"></div>
                         </div>
-
-                        <div class="pericias-linha-inferior">
-                            
-                            <div class="metade-pericia">
-                                <h3>Físicas</h3>
-                                <div id="container-fisicas" class="lista-vertical"></div>
-                            </div>
-
-                            <div class="metade-pericia">
-                                <h3>Maestria de Armas</h3>
-                                <div id="container-armas" class="lista-vertical"></div>
-                            </div>
-
+                        <div class="metade-pericia">
+                            <h3>Armas</h3>
+                            <div id="container-armas" class="lista-vertical"></div>
                         </div>
                     </div>
-
-            </div>
-        </section>
-
-        <section id="config-container" class="escondido">
-            <h2>Configurações</h2>
-            <div class="config-item">
-                <label class="switch-container">
-                    <span>Usar fonte legível (Arial) no Registro Rápido</span>
-                    <input type="checkbox" id="check-fonte-legivel">
-                    <span class="checkmark"></span>
-                </label>
+                </div>
             </div>
         </section>
 
         <section id="magias-container" class="escondido">
-            <h2>Magias</h2>
+            <div class="cabecalho-magias">
+                <h2>Rituais e Magias</h2>
+                <button id="btn-add-magia" class="btn-icone primario"><i class="ph ph-plus"></i></button>
+            </div>
+            <div id="lista-magias" class="magias-grid"></div>
+        </section>
+
+        <section id="config-container" class="escondido">
+            <div class="config-box">
+                <h2>Configurações</h2>
+                <p>Gerenciamento de Dados</p>
+                <div class="botoes-config">
+                    <button id="btn-salvar-nuvem" class="btn-config nuvem">
+                        <i class="ph ph-cloud-arrow-up"></i>
+                        <div><strong>Sincronizar</strong><span>Enviar para o Mestre</span></div>
+                    </button>
+                    <button id="btn-carregar-nuvem" class="btn-config nuvem-down">
+                        <i class="ph ph-cloud-arrow-down"></i>
+                        <div><strong>Baixar</strong><span>Restaurar do Servidor</span></div>
+                    </button>
+                </div>
+                <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
+                <div class="preferencias-box">
+                    <h3>Visual</h3>
+                    <label class="switch-container">
+                        <span class="switch-texto">Fonte Legível (Arial)</span>
+                        <div style="position: relative;">
+                            <input type="checkbox" id="check-fonte-legivel">
+                            <span class="checkmark"></span>
+                        </div>
+                    </label>
+                </div>
+                <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
+                <button id="btn-resetar-tudo" class="btn-reset"><i class="ph ph-trash"></i> Resetar Ficha (Perigo)</button>
+            </div>
         </section>
 
         <section id="secret-container" class="escondido">
-            <h2>secret</h2>
+            <div class="skill-tree-wrapper">
+                <svg id="skill-roots" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+                <div id="skill-nodes-area"></div>
+                
+                <div id="master-node" class="master-node-container" title="Origem">
+                    <div class="primordial-rhombus"></div>
+                    <img id="master-symbol-img" src="" alt="Origem" class="master-symbol">
+                </div>
+            </div>
         </section>
     </div>
 
-        <div id="modal-item" class="modal-overlay escondido">
+    <div id="modal-maximos" class="modal-overlay escondido">
         <div class="modal-caixa">
-            <h3>Novo Item</h3>
-            
+            <h3>Limites</h3>
+            <div class="grid-modal-max">
+                <div><label>Vida:</label><input type="number" id="edit-pv-max"></div>
+                <div><label>Sanidade:</label><input type="number" id="edit-san-max"></div>
+                <div><label>PE:</label><input type="number" id="edit-pe-max"></div>
+                <div><label>Arcano:</label><input type="number" id="edit-ar-max"></div>
+            </div>
+            <div class="modal-botoes">
+                <button id="btn-cancelar-max">Cancelar</button>
+                <button id="btn-salvar-max">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-item" class="modal-overlay escondido">
+        <div class="modal-caixa">
+            <h3>Item</h3>
             <label>Nome:</label>
-            <input type="text" id="modal-nome" placeholder="Ex: Espada Longa">
-            
-            <label>Quantidade:</label>
-            <input type="number" id="modal-qtd" value="1">
-            
+            <input type="text" id="modal-nome">
+            <div style="display: flex; gap: 15px; margin: 10px 0;">
+                <div style="flex: 1;"><label>Qtd:</label><input type="number" id="modal-qtd" value="1"></div>
+                <div style="flex: 1;"><label>Peso (kg):</label><input type="number" id="modal-peso" placeholder="0.0" step="0.1"></div>
+            </div>
             <label>Descrição:</label>
-            <textarea id="modal-desc" placeholder="Ex: Causa 1d8 de dano cortante..."></textarea>
-            
+            <textarea id="modal-desc"></textarea>
             <div class="modal-botoes">
                 <button id="btn-cancelar-modal">Cancelar</button>
                 <button id="btn-salvar-modal">Salvar</button>
             </div>
         </div>
+    </div>
+
+    <div id="modal-magia" class="modal-overlay escondido">
+        <div class="modal-caixa">
+            <h3>Ritual</h3>
+            <label>Nome:</label>
+            <input type="text" id="magia-nome">
+            <div style="display: flex; gap: 10px; margin: 10px 0;">
+                <div style="flex: 1;">
+                    <label>Custo:</label>
+                    <input type="number" id="magia-custo">
+                    <span id="btn-add-custo" class="link-pequeno">+ Extra</span>
+                    <div id="container-custo-extra" class="escondido"><input type="text" id="magia-custo-extra" placeholder="Ex: 2 San"></div>
+                </div>
+                <div style="flex: 1;">
+                    <label>Cor:</label>
+                    <select id="magia-elemento-select">
+                        <option value="#ff9900">Laranja</option>
+                        <option value="#00ff88">Verde</option>
+                        <option value="#0022ab">Azul</option>
+                        <option value="#980000">Vermelho</option>
+                        <option value="#43016f">Roxo</option>
+                        <option value="#ffffff">Branco</option>
+                    </select>
+                </div>
+            </div>
+            <label>Efeito:</label>
+            <textarea id="magia-desc" style="height: 100px;"></textarea>
+            <div class="modal-botoes">
+                <button id="btn-cancelar-magia">Cancelar</button>
+                <button id="btn-salvar-magia">Salvar</button>
+            </div>
         </div>
+    </div>
+
+    <div id="modal-senha" class="modal-overlay escondido">
+        <div class="modal-caixa" style="width: 350px; text-align: center;">
+            <h3 style="color: #c00;">Selado</h3>
+            <p id="msg-bloqueio" style="color: #aaa; font-size: 0.9rem;">As correntes protegem este conteúdo.</p>
+            <input type="text" id="input-senha" autocomplete="off" style="text-align: center; letter-spacing: 3px;">
+            <div class="modal-botoes" style="margin-top: 20px;">
+                <button id="btn-cancelar-senha" style="background: transparent; color: #888;">Voltar</button>
+                <button id="btn-confirma-senha" style="background: #c00; color: #fff;">Quebrar Selo</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-skill-card" class="modal-overlay escondido">
+        <div class="modal-caixa skill-card-box">
+            <div class="skill-header">
+                <img id="card-skill-img" src="" class="mini-symbol">
+                <h3 id="card-skill-title">Título</h3>
+            </div>
+            <hr style="border-color: #ff9900; opacity: 0.5; margin: 10px 0;">
+            <div id="card-skill-desc" class="skill-desc-text">...</div>
+            <div id="skill-lock-area" style="margin-top: 20px; text-align: center;">
+                <input type="text" id="skill-pass-input" placeholder="???" autocomplete="off" style="text-align: center; letter-spacing: 3px; border-color: #ff9900; color: #ff9900; font-weight: bold;">
+            </div>
+            <div class="modal-botoes" style="justify-content: center; margin-top: 15px;">
+                <button id="btn-fechar-skill-card">Fechar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
