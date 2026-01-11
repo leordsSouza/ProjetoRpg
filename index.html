@@ -62,124 +62,248 @@
                         <img src="https://via.placeholder.com/150/000/333?text=?" id="char-foto" alt="Personagem">
                         <div class="overlay-foto"><i class="ph ph-camera"></i></div>
                     </div>
+                    
                     <div class="perfil-dados">
-                        <input type="text" id="nome-char" class="input-fantasma titulo" placeholder="Nome do Personagem">
-                        <input type="text" id="classe-char" class="input-fantasma subtitulo" placeholder="Classe / Origem">
+                        <div class="perfil-linha-sup">
+                            <input type="text" id="nome-char" class="input-fantasma titulo" placeholder="Nome do Personagem">
+                            
+                            <div class="box-nivel">
+                                <span class="label-lvl">LVL</span>
+                                <input type="number" id="nivel-char" value="1">
+                            </div>
+                        </div>
+
+                        <div class="perfil-linha-inf">
+                            <input type="text" id="classe-char" class="input-fantasma subtitulo" placeholder="Classe">
+                            <input type="text" id="subclasse-char" class="input-fantasma subtitulo" placeholder="Subclasse">
+                        </div>
                     </div>
                 </div>
 
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin: 15px 0 2px 0;">
                     <h2 id="Status" style="margin:0;">Status</h2>
-                    <button id="btn-edit-maximos" class="btn-lapis" title="Editar Limites"><i class="ph ph-pencil-simple"></i></button>
+                    <button id="btn-edit-maximos" class="btn-lapis" title="Editar Limites">
+                        <i class="ph ph-pencil-simple"></i>
+                    </button>
                 </div>
 
-                <ul id="recursos-lista">
-                    <li class="recursos-item">
-                        <span class="coluna-status status-vida">VIDA</span>
-                        <div class="controle-recurso">
-                            <button class="btn-seta diminui" id="btn-vida-menos">&#9664;</button>
-                            <div class="barra-container">
-                                <div class="barra-preenchimento" id="vida-bar-fill"></div>
-                                <div class="texto-sobreposto"><span id="pv-atual">10</span> / <span id="pv-max">10</span></div>
-                            </div>
-                            <button class="btn-seta aumenta" id="btn-vida-mais">&#9654;</button>
-                        </div>
-                        <input type="number" id="temp-vida" class="input-temp" placeholder="0" title="Temp">
-                    </li>
-                    <li class="recursos-item">
-                        <span class="coluna-status status-san">SAN</span>
-                        <div class="controle-recurso">
-                            <button class="btn-seta diminui" id="btn-san-menos">&#9664;</button>
-                            <div class="barra-container">
-                                <div class="barra-preenchimento" id="san-bar-fill"></div>
-                                <div class="texto-sobreposto"><span id="san-atual">20</span> / <span id="san-max">20</span></div>
-                            </div>
-                            <button class="btn-seta aumenta" id="btn-san-mais">&#9654;</button>
-                        </div>
-                        <input type="number" id="temp-san" class="input-temp" placeholder="0" title="Temp">
-                    </li>
-                    <li class="recursos-item">
-                        <span class="coluna-status status-pe">PE</span>
-                        <div class="controle-recurso">
-                            <button class="btn-seta diminui" id="btn-pe-menos">&#9664;</button>
-                            <div class="barra-container">
-                                <div class="barra-preenchimento" id="pe-bar-fill"></div>
-                                <div class="texto-sobreposto"><span id="pe-atual">5</span> / <span id="pe-max">5</span></div>
-                            </div>
-                            <button class="btn-seta aumenta" id="btn-pe-mais">&#9654;</button>
-                        </div>
-                        <input type="number" id="temp-pe" class="input-temp" placeholder="0" title="Temp">
-                    </li>
-                    <li class="recursos-item">
-                        <span class="coluna-status status-ar">ARC</span>
-                        <div class="controle-recurso">
-                            <button class="btn-seta diminui" id="btn-ar-menos">&#9664;</button>
-                            <div class="barra-container">
-                                <div class="barra-preenchimento" id="ar-bar-fill"></div>
-                                <div class="texto-sobreposto"><span id="ar-atual">15</span> / <span id="ar-max">15</span></div>
-                            </div>
-                            <button class="btn-seta aumenta" id="btn-ar-mais">&#9654;</button>
-                        </div>
-                        <input type="number" id="temp-ar" class="input-temp" placeholder="0" title="Temp">
-                    </li>
-                </ul>
+                <div class="status-layout-dividido">
+                    
+                    <div class="coluna-barras">
+                        <ul id="recursos-lista">
+                            
+                            <li class="recursos-item">
+                                <span class="coluna-status status-vida">VIDA</span>
+                                <div class="controle-recurso">
+                                    <button class="btn-seta diminui" id="btn-vida-menos">&#9664;</button>
+                                    <div class="barra-container">
+                                        <div class="barra-preenchimento" id="vida-bar-fill"></div>
+                                        <div class="texto-sobreposto"><span id="pv-atual">10</span> / <span id="pv-max">10</span></div>
+                                    </div>
+                                    <button class="btn-seta aumenta" id="btn-vida-mais">&#9654;</button>
+                                </div>
+                                <input type="number" id="temp-vida" class="input-temp" placeholder="0">
+                            </li>
 
-                <div class="registro-rapido-container">
-                    <h3>Registro Rápido</h3>
-                    <textarea id="anotacoes-rapidas" class="registro-texto" placeholder="Anotações de sessão..."></textarea>
+                            <li class="recursos-item">
+                                <span class="coluna-status status-san">SAN</span>
+                                <div class="controle-recurso">
+                                    <button class="btn-seta diminui" id="btn-san-menos">&#9664;</button>
+                                    <div class="barra-container">
+                                        <div class="barra-preenchimento" id="san-bar-fill"></div>
+                                        <div class="texto-sobreposto"><span id="san-atual">20</span> / <span id="san-max">20</span></div>
+                                    </div>
+                                    <button class="btn-seta aumenta" id="btn-san-mais">&#9654;</button>
+                                </div>
+                                <input type="number" id="temp-san" class="input-temp" placeholder="0">
+                            </li>
+
+                            <li class="recursos-item">
+                                <span class="coluna-status status-pe">PE</span>
+                                <div class="controle-recurso">
+                                    <button class="btn-seta diminui" id="btn-pe-menos">&#9664;</button>
+                                    <div class="barra-container">
+                                        <div class="barra-preenchimento" id="pe-bar-fill"></div>
+                                        <div class="texto-sobreposto"><span id="pe-atual">5</span> / <span id="pe-max">5</span></div>
+                                    </div>
+                                    <button class="btn-seta aumenta" id="btn-pe-mais">&#9654;</button>
+                                </div>
+                                <input type="number" id="temp-pe" class="input-temp" placeholder="0">
+                            </li>
+
+                            <li class="recursos-item">
+                                <span class="coluna-status status-ar">ARC</span>
+                                <div class="controle-recurso">
+                                    <button class="btn-seta diminui" id="btn-ar-menos">&#9664;</button>
+                                    <div class="barra-container">
+                                        <div class="barra-preenchimento" id="ar-bar-fill"></div>
+                                        <div class="texto-sobreposto"><span id="ar-atual">15</span> / <span id="ar-max">15</span></div>
+                                    </div>
+                                    <button class="btn-seta aumenta" id="btn-ar-mais">&#9654;</button>
+                                </div>
+                                <input type="number" id="temp-ar" class="input-temp" placeholder="0">
+                            </li>
+
+                            <li class="recursos-item">
+                                <span class="coluna-status status-esp">ESP</span>
+                                <div class="controle-recurso">
+                                    <button class="btn-seta diminui" id="btn-esp-menos">&#9664;</button>
+                                    <div class="barra-container">
+                                        <div class="barra-preenchimento" id="esp-bar-fill"></div>
+                                        <div class="texto-sobreposto"><span id="esp-atual">0</span> / <span id="esp-max">0</span></div>
+                                    </div>
+                                    <button class="btn-seta aumenta" id="btn-esp-mais">&#9654;</button>
+                                </div>
+                                <input type="number" id="temp-esp" class="input-temp" placeholder="0">
+                            </li>
+
+                        </ul>
+                    </div>
+
+                    <div class="coluna-outros">
+                        <div class="status-secundarios">
+
+                            <div class="status-linha defesa-wrapper">
+                                <span class="status-label">Defesa</span>
+                                
+                                <div class="box-escudo">
+                                    <svg class="escudo-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                    </svg>
+                                    
+                                    <input type="number" id="defesa-char" class="input-escudo" value="0">
+                                </div>
+                            </div>
+
+                            <div class="status-linha">
+                                <span class="status-label">Movimento</span>
+                                
+                                <div class="box-status box-movimento">
+                                    <input type="number" id="mov-char" value="0">
+                                    <span class="unidade-medida">m</span> </div>
+                            </div>
+
+                            <div class="status-linha">
+                                <span class="status-label" style="color: #ff9900;">Fome</span>
+                                <div class="fome-trackers">
+                                    <input type="checkbox" id="fome-1" data-grau="1" onclick="atualizarFome(this)">
+                                    <input type="checkbox" id="fome-2" data-grau="2" onclick="atualizarFome(this)">
+                                    <input type="checkbox" id="fome-3" data-grau="3" onclick="atualizarFome(this)">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
+
+                    <div class="rodape-status-grid">
+        
+                        <div class="rodape-coluna col-notas">
+                            <h3 class="rodape-titulo">Registro Rápido</h3>
+                            <textarea id="anotacoes-rapidas" class="area-texto-p" placeholder="Notas..."></textarea>
+                        </div>
+
+                        <div class="rodape-coluna col-dados">
+                            
+                            <div class="dado-linha">
+                                <span class="label-dado">Idade</span>
+                                <div class="box-dado"><input type="text" id="idade-char"></div>
+                            </div>
+                            
+                            <div class="dado-linha">
+                                <span class="label-dado">Altura</span>
+                                <div class="box-dado"><input type="text" id="altura-char"></div>
+                            </div>
+
+                            <div class="dado-linha">
+                                <span class="label-dado">Peso</span>
+                                <div class="box-dado"><input type="text" id="peso-char"></div>
+                            </div>
+
+                            <div class="dado-linha">
+                                <span class="label-dado" style="color: #ffd700;">Sorte</span>
+                                <div class="box-dado"><input type="number" id="sorte-char"></div>
+                            </div>
+
+                            <div class="dado-linha">
+                                <span class="label-dado" style="color: #00ff88;">Dinheiro</span>
+                                <div class="box-dado"><input type="text" id="dinheiro-char"></div>
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+
             </section>
 
-            <section id="fundamentos-area">
-                <div class="fundamentos-grid">
-                    <div></div><div></div><div></div>
-                    
-                    <div class="attr-box int">
-                        <span class="attr-label">INT</span>
-                        <input type="number" id="input-int" class="attr-input" value="0">
-                    </div>
-                    
-                    <div></div><div></div><div></div>
-                    
-                    <div class="attr-box con">
-                        <span class="attr-label">CON</span>
-                        <input type="number" id="input-con" class="attr-input" value="0">
-                    </div>
-                    
-                    <div></div><div></div>
-                    
-                    <div class="attr-box pre">
-                        <span class="attr-label">PRE</span>
-                        <input type="number" id="input-pre" class="attr-input" value="0">
-                    </div>
-                    <div class="attr-box for">
-                        <span class="attr-label">FOR</span>
-                        <input type="number" id="input-for" class="attr-input" value="0">
-                    </div>
+            <div class="direita-wrapper">
+                <section id="fundamentos-area">
+                    <div class="fundamentos-grid">
+                        <div></div><div></div><div></div>
+                        
+                        <div class="attr-box int">
+                            <span class="attr-label">INT</span>
+                            <input type="number" id="input-int" class="attr-input" value="0">
+                        </div>
+                        
+                        <div></div><div></div><div></div>
+                        
+                        <div class="attr-box con">
+                            <span class="attr-label">CON</span>
+                            <input type="number" id="input-con" class="attr-input" value="0">
+                        </div>
+                        
+                        <div></div><div></div>
+                        
+                        <div class="attr-box pre">
+                            <span class="attr-label">PRE</span>
+                            <input type="number" id="input-pre" class="attr-input" value="0">
+                        </div>
+                        <div class="attr-box for">
+                            <span class="attr-label">FOR</span>
+                            <input type="number" id="input-for" class="attr-input" value="0">
+                        </div>
 
-                    <div class="simbolo-container">
-                        <div class="linha l-1"></div> <div class="linha l-2"></div> <div class="linha l-3"></div>
-                        <div class="linha l-4"></div> <div class="linha l-5"></div> <div class="linha l-6"></div>
-                        <div class="linha l-7"></div> <div class="linha l-8"></div> <div class="linha l-9"></div>
-                        <div class="linha l-10"></div> <div class="linha l-11"></div> <div class="linha l-12"></div>
-                        <div class="linha l-13"></div> <div class="linha deitada"></div>
-                        <div class="linha cruzada-c1"></div> <div class="linha cruzada-c2"></div>
-                    </div>
+                        <div class="simbolo-container">
+                            <div class="linha l-1"></div> <div class="linha l-2"></div> <div class="linha l-3"></div>
+                            <div class="linha l-4"></div> <div class="linha l-5"></div> <div class="linha l-6"></div>
+                            <div class="linha l-7"></div> <div class="linha l-8"></div> <div class="linha l-9"></div>
+                            <div class="linha l-10"></div> <div class="linha l-11"></div> <div class="linha l-12"></div>
+                            <div class="linha l-13"></div> <div class="linha deitada"></div>
+                            <div class="linha cruzada-c1"></div> <div class="linha cruzada-c2"></div>
+                        </div>
 
-                    <div></div><div></div>
-                    
-                    <div class="attr-box agi">
-                        <span class="attr-label">AGI</span>
-                        <input type="number" id="input-agi" class="attr-input" value="0">
+                        <div></div><div></div>
+                        
+                        <div class="attr-box agi">
+                            <span class="attr-label">AGI</span>
+                            <input type="number" id="input-agi" class="attr-input" value="0">
+                        </div>
+                        <div class="attr-box arc">
+                            <span class="attr-label">ARC</span>
+                            <input type="number" id="input-arc" class="attr-input" value="0">
+                        </div>
+                        
+                        <div></div>
                     </div>
-                    <div class="attr-box arc">
-                        <span class="attr-label">ARC</span>
-                        <input type="number" id="input-arc" class="attr-input" value="0">
-                    </div>
-                    
-                    <div></div>
-                </div>
-            </section>
+                </section>
+                        <div class="rodape-coluna col-traumas">
+                                
+                            <div class="bloco-trauma">
+                                <h3 class="rodape-titulo">Lesões e Doenças</h3>
+                                <textarea id="lesoes-texto" class="area-texto-pp"></textarea>
+                            </div>
+
+                            <div class="bloco-trauma">
+                                <h3 class="rodape-titulo">Traumas</h3>
+                                <textarea id="traumas-texto" class="area-texto-pp"></textarea>
+                            </div>
+
+                        </div>
+            </div>
         </main>
 
         <section id="inventario-container" class="escondido">
@@ -271,12 +395,13 @@
 
     <div id="modal-maximos" class="modal-overlay escondido">
         <div class="modal-caixa">
-            <h3>Limites</h3>
+            <h3>Definir Status</h3>
             <div class="grid-modal-max">
                 <div><label>Vida:</label><input type="number" id="edit-pv-max"></div>
                 <div><label>Sanidade:</label><input type="number" id="edit-san-max"></div>
                 <div><label>PE:</label><input type="number" id="edit-pe-max"></div>
                 <div><label>Arcano:</label><input type="number" id="edit-ar-max"></div>
+                <div><label>Esperança:</label><input type="number" id="edit-esp-max"></div>
             </div>
             <div class="modal-botoes">
                 <button id="btn-cancelar-max">Cancelar</button>

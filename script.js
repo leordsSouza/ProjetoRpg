@@ -35,7 +35,8 @@ const els = {
         { id: 'pv', bar: 'vida', cor: '#c00', crit: '#500' },
         { id: 'san', bar: 'san', cor: '#800080', crit: '#4b0082' },
         { id: 'pe', bar: 'pe', cor: '#00e5ff', crit: '#00606b' },
-        { id: 'ar', bar: 'ar', cor: '#2b59c3', crit: '#10224a' }
+        { id: 'ar', bar: 'ar', cor: '#2b59c3', crit: '#10224a' },
+        { id: 'esp', bar: 'esp', cor: '#ffd700', crit: '#b39700' }
     ]
 };
 
@@ -113,16 +114,19 @@ els.status.forEach(stat => {
 });
 
 // Salvamento de Perfil (Nome/Classe)
-['nome', 'classe'].forEach(tipo => {
-    const el = els[tipo];
-    const key = `${tipo}-char`;
+[
+    'nome', 'classe', 'subclasse', 'nivel', 'res', 'mov', 'idade', 'altura', 'peso', 'sorte', 'dinheiro' ].forEach(tipo => {
+    const key = `${tipo}-char`; // Gera: nome-char, nivel-char, etc.
+    const el = document.getElementById(key);
     
-    // Carrega
-    const salvo = Memoria.getItem(key);
-    if (salvo) el.value = salvo;
+    if (el) {
+        // Carrega
+        const salvo = Memoria.getItem(key);
+        if (salvo) el.value = salvo;
 
-    // Salva ao digitar
-    el.addEventListener('input', () => Memoria.setItem(key, el.value));
+        // Salva ao digitar
+        el.addEventListener('input', () => Memoria.setItem(key, el.value));
+    }
 });
 
 // Salvamento de Atributos (Força, Agi, etc)
@@ -134,6 +138,32 @@ els.status.forEach(stat => {
         if (salvo) el.value = salvo;
         el.addEventListener('input', () => Memoria.setItem(id, el.value));
     }
+});
+
+// --- SISTEMA DE FOME (CASCATA) ---
+window.atualizarFome = (checkbox) => {
+    const grauClicado = parseInt(checkbox.dataset.grau);
+    const marcar = checkbox.checked;
+
+    // Loop pelos 3 checkboxes
+    for (let i = 1; i <= 3; i++) {
+        const el = document.getElementById(`fome-${i}`);
+        if (marcar) {
+            // Se marquei o 3, marca 1 e 2 também
+            if (i <= grauClicado) el.checked = true;
+        } else {
+            // Se desmarquei o 1, desmarca 2 e 3 também
+            if (i >= grauClicado) el.checked = false;
+        }
+        // Salva cada um individualmente
+        Memoria.setItem(`fome-${i}`, el.checked);
+    }
+};
+
+// Carregar Fome ao iniciar
+[1, 2, 3].forEach(i => {
+    const el = document.getElementById(`fome-${i}`);
+    if (el) el.checked = Memoria.getItem(`fome-${i}`) === 'true';
 });
 
 // ==================================================================
@@ -424,6 +454,7 @@ if (uiInv.inputForca) uiInv.inputForca.addEventListener('input', atualizarCarga)
 renderizarInventario();
 
 
+
 // ==================================================================
 // 7. SISTEMA DE PERÍCIAS (SIMPLIFICADO)
 // ==================================================================
@@ -513,10 +544,10 @@ preencherLista('container-armas', listasPericias.armas);
 
 
 // ==================================================================
-// 8. PONTOS TEMPORÁRIOS (SIMPLIFICADO)
+// 8. PONTOS TEMPORÁRIOS E TEXTOS (SIMPLIFICADO)
 // ==================================================================
 
-['temp-vida', 'temp-san', 'temp-pe', 'temp-ar'].forEach(id => {
+['temp-vida', 'temp-san', 'temp-pe', 'temp-ar', 'temp-esp'].forEach(id => {
     const input = document.getElementById(id);
     if (!input) return;
 
@@ -524,6 +555,15 @@ preencherLista('container-armas', listasPericias.armas);
     if (salvo) input.value = salvo;
 
     input.addEventListener('input', () => Memoria.setItem(id, input.value));
+});
+
+// Salvamento de Textos Grandes
+['anotacoes-rapidas', 'lesoes-texto', 'traumas-texto'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+        el.value = Memoria.getItem(id) || '';
+        el.addEventListener('input', () => Memoria.setItem(id, el.value));
+    }
 });
 
 // ==================================================================
@@ -784,7 +824,8 @@ const uiMax = {
         { id: 'pv', input: 'edit-pv-max', display: 'pv-max', mem: 'max-pv', def: '20' },
         { id: 'san', input: 'edit-san-max', display: 'san-max', mem: 'max-san', def: '20' },
         { id: 'pe', input: 'edit-pe-max', display: 'pe-max', mem: 'max-pe', def: '5' },
-        { id: 'ar', input: 'edit-ar-max', display: 'ar-max', mem: 'max-ar', def: '10' }
+        { id: 'ar', input: 'edit-ar-max', display: 'ar-max', mem: 'max-ar', def: '10' },
+        { id: 'esp', input: 'edit-esp-max', display: 'esp-max', mem: 'max-esp', def: '20' }
     ]
 };
 
@@ -1035,3 +1076,19 @@ document.getElementById('btn-menu-secret')?.addEventListener('click', () => {
 
 // Inicialização de teste
 setTimeout(carregarAbaSecreta, 500);
+
+/* --- SISTEMA DE DEFESA (SALVAR/CARREGAR) --- */
+
+const inputDefesa = document.getElementById('defesa-char');
+
+// 1. Carregar o valor salvo (se existir) ao abrir a página
+if (localStorage.getItem('defesa-char')) {
+    inputDefesa.value = localStorage.getItem('defesa-char');
+}
+
+// 2. Salvar automaticamente toda vez que você mudar o número
+if (inputDefesa) {
+    inputDefesa.addEventListener('input', function() {
+        localStorage.setItem('defesa-char', this.value);
+    });
+}
