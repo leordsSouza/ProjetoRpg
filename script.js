@@ -694,80 +694,102 @@ if (checkFonte) {
 
 
 // ==================================================================
-// 11. SISTEMA DE NUVEM (MODO MESTRE)
+// 11. SISTEMA DE SALVAR/CARREGAR (VISUAL DARK + SERVIDOR LOCAL)
 // ==================================================================
 const btnSalvarNuvem = document.getElementById('btn-salvar-nuvem');
 const btnCarregarNuvem = document.getElementById('btn-carregar-nuvem');
 
-// --- SALVAR NA NUVEM ---
+// --- 1. SALVAR (COM POP-UP BONITO) ---
 if (btnSalvarNuvem) {
+    // O segredo está aqui: 'async' permite esperar o pop-up
     btnSalvarNuvem.onclick = async () => {
         const textoOriginal = btnSalvarNuvem.innerHTML;
         btnSalvarNuvem.innerHTML = '<i class="ph ph-spinner mb-spin"></i> ...';
 
-        const dados = Memoria.getTudo();
-        dados['nome-char'] = document.getElementById('nome-char').value || 'SemNome';
-
-        if (Object.keys(dados).length <= 1) {
-            alert("Erro: Ficha vazia. Salvamento cancelado.");
-            btnSalvarNuvem.innerHTML = textoOriginal;
-            return;
-        }
+        // Tenta pegar os dados (Memoria ou localStorage)
+        let dados = (typeof Memoria !== 'undefined') ? Memoria.getTudo() : localStorage;
+        
+        // Garante que o nome esteja atualizado
+        const inputNome = document.getElementById('nome-char');
+        dados['nome-char'] = inputNome ? inputNome.value : 'SemNome';
 
         try {
+            // Envia para o servidor
             const resp = await fetch('/salvar-ficha', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dados)
             });
-            alert(resp.ok ? "Salvo na nuvem com sucesso! ☁️" : "Erro no servidor.");
+
+            if (resp.ok) {
+                // SUCESSO VISUAL
+                await RPG.alert("Sincronizado", "Ficha salva na pasta 'dados' com sucesso! ✅");
+            } else {
+                // ERRO VISUAL
+                await RPG.alert("Erro", "O servidor recusou o salvamento. Verifique o terminal.");
+            }
         } catch (e) {
-            alert("Erro de conexão com o servidor.");
+            console.error(e);
+            // ERRO DE CONEXÃO VISUAL
+            await RPG.alert("Sem Conexão", "Não consegui falar com o servidor.\nCertifique-se que o 'node server.js' está rodando.");
         } finally {
             btnSalvarNuvem.innerHTML = textoOriginal;
         }
     };
 }
 
-// --- CARREGAR DA NUVEM ---
+// --- 2. CARREGAR (COM POP-UP BONITO) ---
 if (btnCarregarNuvem) {
     btnCarregarNuvem.onclick = async () => {
-        const nomeAlvo = document.getElementById('nome-char').value;
-        if (!nomeAlvo) return alert("Digite o nome do personagem para buscar!");
+        let nomeAlvo = document.getElementById('nome-char').value;
+
+        // Se o campo estiver vazio, abre a CAIXINHA PRETA para digitar
+        if (!nomeAlvo) {
+            nomeAlvo = await RPG.prompt("Baixar Ficha", "Digite o nome do personagem para restaurar:");
+        }
+
+        // Se clicou em cancelar ou deixou vazio, para tudo
+        if (!nomeAlvo) return;
 
         const textoOriginal = btnCarregarNuvem.innerHTML;
         btnCarregarNuvem.innerHTML = '<i class="ph ph-spinner mb-spin"></i> ...';
 
         try {
-            // Importante: ?t=Date.now() evita cache antigo
+            // Busca no servidor
             const resp = await fetch(`/carregar-ficha/${nomeAlvo}?t=${Date.now()}`);
             
             if (resp.ok) {
                 const dados = await resp.json();
-                if (confirm(`Ficha de "${dados['nome-char']}" encontrada. Substituir a atual?`)) {
-                    Memoria.clear();
-                    Object.keys(dados).forEach(k => Memoria.setItem(k, dados[k]));
+                
+                // PERGUNTA DE CONFIRMAÇÃO VISUAL
+                const confirmou = await RPG.confirm(
+                    "Ficha Encontrada", 
+                    `Deseja substituir a ficha atual pela versão salva de "${dados['nome-char']}"?`
+                );
+
+                if (confirmou) {
+                    // Lógica de Carregamento
+                    if (typeof Memoria !== 'undefined') {
+                        Memoria.clear();
+                        Object.keys(dados).forEach(k => Memoria.setItem(k, dados[k]));
+                    } else {
+                        localStorage.clear();
+                        Object.keys(dados).forEach(k => localStorage.setItem(k, dados[k]));
+                    }
                     location.reload();
                 }
             } else {
-                alert("Ficha não encontrada.");
+                // ERRO: NÃO ACHOU
+                await RPG.alert("Não Encontrado", `Não existe nenhum arquivo "${nomeAlvo}.json" na pasta dados.`);
             }
         } catch (e) {
-            alert("Erro de conexão.");
+            console.error(e);
+            await RPG.alert("Erro", "Erro ao conectar com o servidor.");
         } finally {
             btnCarregarNuvem.innerHTML = textoOriginal;
         }
     };
 }
-
-// Botão Reset (Segurança)
-document.getElementById('btn-resetar-tudo')?.addEventListener('click', () => {
-    if (confirm("CUIDADO: Isso apaga tudo deste navegador. Continuar?")) {
-        Memoria.clear();
-        location.reload();
-    }
-});
-
 
 // ==================================================================
 // 12. FOTO DE PERFIL & UTILITÁRIOS
@@ -1091,4 +1113,232 @@ if (inputDefesa) {
     inputDefesa.addEventListener('input', function() {
         localStorage.setItem('defesa-char', this.value);
     });
+}
+
+/* ==========================================================================
+   10. CONFIGURAÇÕES VISUAIS (FONTE & SWITCHES)
+   ========================================================================== */
+
+// Função unificada para configurar switches
+const setupSwitch = (idBotao, classeBody, chaveStorage) => {
+    const toggle = document.getElementById(idBotao);
+    if (!toggle) return;
+
+    // Carregar
+    const ativo = localStorage.getItem(chaveStorage) === 'true';
+    if (ativo) {
+        document.body.classList.add(classeBody);
+        toggle.checked = true;
+    }
+
+    // Salvar
+    toggle.addEventListener('change', () => {
+        document.body.classList.toggle(classeBody, toggle.checked);
+        localStorage.setItem(chaveStorage, toggle.checked);
+    });
+};
+
+// Configuração em Lote
+[
+    ['check-legivel-dados', 'legivel-dados', 'pref-legivel-dados'],
+    ['check-legivel-traumas', 'legivel-traumas', 'pref-legivel-traumas'],
+    ['check-legivel-registro', 'legivel-registro', 'pref-legivel-registro'],
+    ['check-legivel-bestiario', 'legivel-bestiario', 'pref-legivel-bestiario']
+].forEach(conf => setupSwitch(...conf));
+
+
+/* ==========================================================================
+   LÓGICA DO BESTIÁRIO
+   ========================================================================== */
+
+// 1. Sistema de Busca (Filtro)
+document.querySelector('.input-busca')?.addEventListener('input', function() {
+    const termo = this.value.toLowerCase();
+    document.querySelectorAll('.card-monstro').forEach(card => {
+        const texto = card.innerText.toLowerCase();
+        card.style.display = texto.includes(termo) ? 'flex' : 'none';
+    });
+});
+
+// 2. Botão Adicionar Monstro (Rápido)
+const btnAddMonstro = document.querySelector('.btn-add-monstro');
+const gridMonstros = document.querySelector('.grid-monstros');
+
+if (btnAddMonstro && gridMonstros) {
+    btnAddMonstro.addEventListener('click', () => {
+        const novoCard = document.createElement('div');
+        novoCard.className = 'card-monstro';
+        novoCard.style.opacity = '0';
+        
+        novoCard.innerHTML = `
+            <div class="monstro-img-placeholder"><i class="ph ph-question"></i></div>
+            <div class="monstro-info">
+                <h3 class="monstro-nome">Nova Criatura</h3>
+                <p class="monstro-tipo">Desconhecido</p>
+                <div class="monstro-stats"><span class="stat-tag vida">HP: ??</span><span class="stat-tag dano">Dano: ??</span></div>
+            </div>`;
+
+        gridMonstros.appendChild(novoCard);
+        setTimeout(() => { novoCard.style.transition = 'opacity 0.5s'; novoCard.style.opacity = '1'; }, 10);
+    });
+}
+
+// 3. Renderização do Bestiário (Dados do arquivo externo)
+function renderizarBestiario() {
+    if (!gridMonstros || typeof bestiarioData === 'undefined') return;
+    console.log("Desenhando bestiário...");
+    
+    gridMonstros.innerHTML = '';
+    
+    bestiarioData.forEach(monstro => {
+        const card = document.createElement('div');
+        card.className = 'card-monstro';
+        card.onclick = () => abrirDetalhesMonstro(monstro);
+
+        const imagem = monstro.img ? `<img src="${monstro.img}" style="width:100%; height:100%; object-fit:cover;">` : '<i class="ph ph-skull"></i>';
+
+        card.innerHTML = `
+            <div class="monstro-img-placeholder">${imagem}</div>
+            <div class="monstro-info">
+                <h3 class="monstro-nome">${monstro.nome}</h3>
+                <p class="monstro-tipo">${monstro.tipo}</p>
+                <button class="btn-detalhes-card"><i class="ph ph-book-open-text"></i> Detalhes</button>
+            </div>`;
+        gridMonstros.appendChild(card);
+    });
+}
+
+// 4. Modal de Detalhes
+function abrirDetalhesMonstro(m) {
+    const modal = document.getElementById('modal-bestiario-detalhes');
+    if (!modal) return;
+
+    // Preenche Textos
+    const setTxt = (id, txt) => document.getElementById(id).textContent = txt || "---";
+    setTxt('livro-titulo', m.nome);
+    setTxt('livro-desc', m.desc);
+    setTxt('livro-fraquezas', m.fraquezas);
+    setTxt('livro-habilidades', m.habilidades);
+    setTxt('livro-dadivas', m.dadivas);
+    document.getElementById('livro-tipo').innerHTML = m.tipo; // HTML para suportar cores
+
+    // Preenche Imagem
+    const imgElem = document.getElementById('livro-img');
+    const iconElem = document.querySelector('.livro-icon-fallback');
+    
+    if (m.img) {
+        imgElem.src = m.img;
+        imgElem.style.display = 'block';
+        if(iconElem) iconElem.style.display = 'none';
+    } else {
+        imgElem.style.display = 'none';
+        if(iconElem) iconElem.style.display = 'flex';
+    }
+
+    modal.classList.remove('escondido');
+}
+
+const fecharModalBestiario = () => document.getElementById('modal-bestiario-detalhes')?.classList.add('escondido');
+
+// Inicializa
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof renderizarBestiario === 'function') renderizarBestiario();
+});
+
+
+/* ==========================================================================
+   SISTEMA DE NAVEGAÇÃO UNIVERSAL (GERENCIA TODAS AS ABAS)
+   ========================================================================== */
+const mapaNavegacao = {
+    'btn-menu-ficha': 'ficha-container',
+    'btn-menu-inventario': 'inventario-container',
+    'btn-menu-magias': 'magias-container',
+    'btn-menu-bestiario': 'aba-bestiario',
+    'btn-menu-config': 'config-container',
+    'btn-menu-secret': 'secret-container'
+};
+
+Object.keys(mapaNavegacao).forEach(btnId => {
+    const btn = document.getElementById(btnId);
+    const divId = mapaNavegacao[btnId];
+
+    if (btn) {
+        btn.addEventListener('click', function() {
+            // Esconde todas as abas
+            Object.values(mapaNavegacao).forEach(id => document.getElementById(id)?.classList.add('escondido'));
+            
+            // Mostra a alvo
+            const alvo = document.getElementById(divId);
+            if (alvo) {
+                alvo.classList.remove('escondido');
+                alvo.style.opacity = '0';
+                setTimeout(() => alvo.style.opacity = '1', 10);
+            }
+
+            // Atualiza Menu
+            document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('ativo'));
+            this.classList.add('ativo');
+        });
+    }
+});
+
+
+/* ==========================================================================
+   BOTÃO DE RESET E SISTEMA RPG (MODALS)
+   ========================================================================== */
+
+// Botão Reset (Perigo)
+const btnReset = document.getElementById('btn-resetar-tudo');
+if (btnReset) {
+    btnReset.addEventListener('click', async () => {
+        if (await RPG.confirm("Cuidado!", "TEM CERTEZA? Isso vai apagar a ficha da tela (mas não apaga o arquivo salvo).")) {
+            if (typeof Memoria !== 'undefined') Memoria.clear();
+            localStorage.clear();
+            location.reload();
+        }
+    });
+}
+
+// Sistema Visual (Alert/Confirm/Prompt Customizados)
+const RPG = {
+    alert: (titulo, msg) => new Promise(resolve => configurarModal(titulo, msg, 'alert', resolve)),
+    confirm: (titulo, msg) => new Promise(resolve => configurarModal(titulo, msg, 'confirm', resolve)),
+    prompt: (titulo, msg) => new Promise(resolve => configurarModal(titulo, msg, 'prompt', resolve))
+};
+
+function configurarModal(titulo, msg, tipo, resolve) {
+    const el = {
+        modal: document.getElementById('modal-sistema'),
+        h3: document.getElementById('sistema-titulo'),
+        p: document.getElementById('sistema-mensagem'),
+        input: document.getElementById('sistema-input'),
+        ok: document.getElementById('btn-sistema-ok'),
+        cancel: document.getElementById('btn-sistema-cancel')
+    };
+    
+    // Fallback de segurança se o HTML não existir
+    if (!el.modal) return alert(msg);
+
+    el.h3.textContent = titulo;
+    el.p.textContent = msg;
+    el.input.value = '';
+    
+    el.input.classList.toggle('escondido', tipo !== 'prompt');
+    el.cancel.classList.toggle('escondido', tipo === 'alert');
+    el.ok.textContent = tipo === 'alert' ? "Entendido" : "Confirmar";
+
+    if (tipo === 'prompt') setTimeout(() => el.input.focus(), 100);
+
+    el.modal.classList.remove('escondido');
+
+    // Remove listeners antigos clonando os botões
+    const novoOk = el.ok.cloneNode(true);
+    const novoCancel = el.cancel.cloneNode(true);
+    el.ok.parentNode.replaceChild(novoOk, el.ok);
+    el.cancel.parentNode.replaceChild(novoCancel, el.cancel);
+
+    novoOk.onclick = () => { el.modal.classList.add('escondido'); resolve(tipo === 'prompt' ? el.input.value : true); };
+    novoCancel.onclick = () => { el.modal.classList.add('escondido'); resolve(tipo === 'prompt' ? null : false); };
+    
+    if (tipo === 'prompt') el.input.onkeydown = (e) => { if (e.key === 'Enter') novoOk.click(); };
 }

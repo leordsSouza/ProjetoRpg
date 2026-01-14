@@ -25,6 +25,11 @@
             <button class="menu-item" id="btn-menu-magias">
                 <i class="ph ph-book-open"></i><span class="tooltip">Magias</span>
             </button>
+
+            <button class="menu-item" id="btn-menu-bestiario">
+                <i class="ph ph-skull"></i><span class="tooltip">Bestiário</span>
+            </button>
+
             <button class="menu-item" id="btn-menu-config">
                 <i class="ph ph-gear"></i><span class="tooltip">Config</span>
             </button>
@@ -344,39 +349,85 @@
 
         <section id="magias-container" class="escondido">
             <div class="cabecalho-magias">
-                <h2>Rituais e Magias</h2>
+                <h2>Dádivas e Habilidades</h2>
                 <button id="btn-add-magia" class="btn-icone primario"><i class="ph ph-plus"></i></button>
             </div>
             <div id="lista-magias" class="magias-grid"></div>
         </section>
 
+        <section id="aba-bestiario" class="aba-conteudo escondido">
+            <div class="bestiario-container">
+                
+                <div class="bestiario-header">
+                    <h2>Bestiário</h2>
+                    <div class="busca-container">
+                        <input type="text" placeholder="Buscar criatura..." class="input-busca">
+                    </div>
+                </div>
+
+                <div class="grid-monstros"></div>
+
+            </div>
+        </section>
+
         <section id="config-container" class="escondido">
             <div class="config-box">
+                
                 <h2>Configurações</h2>
                 <p>Gerenciamento de Dados</p>
+                
                 <div class="botoes-config">
                     <button id="btn-salvar-nuvem" class="btn-config nuvem">
                         <i class="ph ph-cloud-arrow-up"></i>
-                        <div><strong>Sincronizar</strong><span>Enviar para o Mestre</span></div>
+                        <div><strong>Sincronizar</strong><span><br>Enviar para o Mestre</span></div>
                     </button>
                     <button id="btn-carregar-nuvem" class="btn-config nuvem-down">
                         <i class="ph ph-cloud-arrow-down"></i>
-                        <div><strong>Baixar</strong><span>Restaurar do Servidor</span></div>
+                        <div><strong>Baixar</strong><span><br>Restaurar do Servidor</span></div>
                     </button>
                 </div>
+
                 <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
+
                 <div class="preferencias-box">
                     <h3>Visual</h3>
-                    <label class="switch-container">
-                        <span class="switch-texto">Fonte Legível (Arial)</span>
-                        <div style="position: relative;">
-                            <input type="checkbox" id="check-fonte-legivel">
-                            <span class="checkmark"></span>
-                        </div>
-                    </label>
+                    <p style="color: #aaa; margin-bottom: 20px;">Ative para usar uma fonte padrão (Arial) em áreas específicas.</p>
+
+                    <div class="config-item">
+                        <label class="switch-container">
+                            <input type="checkbox" id="check-legivel-dados">
+                            <span class="visual-switch"></span> <span class="switch-label">Dados Pessoais (Idade, Altura, etc.)</span>
+                        </label>
+                    </div>
+
+                    <div class="config-item">
+                        <label class="switch-container">
+                            <input type="checkbox" id="check-legivel-traumas">
+                            <span class="visual-switch"></span> <span class="switch-label">Traumas e Lesões</span>
+                        </label>
+                    </div>
+
+                    <div class="config-item">
+                        <label class="switch-container">
+                            <input type="checkbox" id="check-legivel-registro">
+                            <span class="visual-switch"></span> <span class="switch-label">Registro Rápido (Notas)</span>
+                        </label>
+                    </div>
+
+                    <div class="config-item">
+                        <label class="switch-container">
+                            <input type="checkbox" id="check-legivel-bestiario"> <span class="visual-switch"></span> 
+                            <span class="switch-label">Detalhes do Bestiário (Pop-up)</span> </label>
+                    </div>
+
                 </div>
+
                 <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
-                <button id="btn-resetar-tudo" class="btn-reset"><i class="ph ph-trash"></i> Resetar Ficha (Perigo)</button>
+
+                <button id="btn-resetar-tudo" class="btn-reset">
+                    <i class="ph ph-trash"></i> Resetar Ficha (Perigo)
+                </button>
+                
             </div>
         </section>
 
@@ -444,10 +495,18 @@
                     <label>Cor:</label>
                     <select id="magia-elemento-select">
                         <option value="#ff9900">Laranja</option>
-                        <option value="#00ff88">Verde</option>
-                        <option value="#0022ab">Azul</option>
+                        <option value="#ffe900">Amarelo</option>
+                        <option value="#ffe900">Verde Claro</option>
+                        <option value="#006507">Verde Escuro</option>
+                        <option value="#001e99">Azul Escuro</option>
+                        <option value="#00ccd5">Azul Claro</option>
                         <option value="#980000">Vermelho</option>
                         <option value="#43016f">Roxo</option>
+                        <option value="#ff00df">Rosa</option>
+                        <option value="#382500">Marrom</option>
+                        <option value="#722F37">Vermelho (Vinho)</option>
+                        <option value="#000000">Preto</option>
+                        <option value="#636363">Cinza</option>
                         <option value="#ffffff">Branco</option>
                     </select>
                 </div>
@@ -489,6 +548,70 @@
             </div>
         </div>
     </div>
+
+    <div id="modal-bestiario-detalhes" class="modal-overlay escondido">
+        <div class="modal-livro">
+            <button class="btn-fechar-livro" onclick="fecharModalBestiario()"><i class="ph ph-x"></i></button>
+            
+            <div class="livro-conteudo">
+                <div class="livro-col-esq">
+                    
+                    <div class="livro-foto-frame">
+                        <img id="livro-img" src="" alt="Criatura" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        <div class="livro-icon-fallback"><i class="ph ph-skull"></i></div>
+                    </div>
+                    
+                    <div class="info-box-lateral">
+                        <h4>Habilidades</h4>
+                        <div class="caixa-rolagem">
+                            <p id="livro-habilidades">...</p>
+                        </div>
+                    </div>
+
+                    <div class="info-box-lateral">
+                        <h4>Dádivas</h4>
+                        <div class="caixa-rolagem">
+                            <p id="livro-dadivas">...</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="livro-col-dir">
+                    <h2 id="livro-titulo">Nome da Criatura</h2>
+                    <p id="livro-tipo">Tipo - Tamanho</p>
+                    
+                    <hr class="divisor-livro">
+                    
+                    <div class="secao-texto">
+                        <h3>Descrição & Comportamento</h3>
+                        <p id="livro-desc">Texto descritivo vai aqui...</p>
+                    </div>
+
+                    <div class="secao-texto">
+                        <h3>Fraquezas & Vantagens</h3>
+                        <p id="livro-fraquezas">Informações de combate...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-sistema" class="modal-overlay escondido">
+        <div class="modal-box sistema-box">
+            <h3 id="sistema-titulo">Título</h3>
+            <p id="sistema-mensagem">Mensagem do sistema...</p>
+            
+            <input type="text" id="sistema-input" class="escondido" autocomplete="off">
+            
+            <div class="modal-botoes">
+                <button id="btn-sistema-cancel" class="btn-cancel">Cancelar</button>
+                <button id="btn-sistema-ok" class="btn-confirm">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="dados_bestiario.js"></script> 
 
     <script src="script.js"></script>
 </body>

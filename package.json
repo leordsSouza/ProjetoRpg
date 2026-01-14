@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/leockignuss1/ProjetoRpg#readme",
   "dependencies": {
-    "body-parser": "^2.2.1",
+    "body-parser": "^2.2.2",
     "cors": "^2.8.5",
     "express": "^5.2.1"
   }

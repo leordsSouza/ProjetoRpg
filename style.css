@@ -181,7 +181,7 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 .btn-delete:hover { color: #ff4d4d; }
 
 /* Controles */
-.controles-inventario { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #333; }
+.controles-inventario { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #333; padding-left: 8px; }
 .btn-icone { width: 40px; height: 40px; border-radius: 8px; border: none; cursor: pointer; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
 .primario { background: #ff9900; color: #000; } .primario:hover { transform: scale(1.05); background: #ffaa33; }
 .secundario { background: #333; color: #eee; } .secundario:hover { background: #c00; color: #fff; }
@@ -199,38 +199,242 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 #anotacoes-rapidas { width: 100%; min-height: 200px; resize: none; background: rgba(255,255,255,0.03); border: 1px dashed #555; color: #ddd; padding: 10px; font-family: 'Reenie Beanie', cursive; font-size: 1.4rem; outline: none; }
 #anotacoes-rapidas:focus { border-color: #ff9900; background: rgba(255,255,255,0.05); }
 
-/* Config */
-.config-item { background: #222; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; }
-.switch-container { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 1.1rem; }
+/* --- ITEM DE CONFIGURAÇÃO (Container) --- */
+.config-item {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 10px 15px; /* Compacto */
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    transition: background 0.2s;
+}
+.config-item:hover { background: #222; }
+
+.switch-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    width: 100%;
+    position: relative;
+}
+
+/* 1. Esconder o checkbox original */
+.switch-container input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* 2. O TRILHO (O Span que adicionamos) */
+.visual-switch {
+    position: relative;
+    display: inline-block;
+    width: 46px;  /* Largura total */
+    height: 24px; /* Altura total */
+    background-color: #333; /* Cor desligado */
+    border-radius: 24px; /* Bem redondo */
+    transition: .3s;
+    flex-shrink: 0; /* Não deixa amassar */
+}
+
+/* 3. A BOLINHA (Pseudo-elemento dentro do trilho) */
+.visual-switch::after {
+    content: '';
+    position: absolute;
+    /* Posicionamento inicial: */
+    top: 2px;
+    left: 2px;
+    height: 20px;
+    width: 20px;
+    background-color: white;
+    border-radius: 50%;
+    transition: .3s;
+}
+
+/* 4. ESTADO LIGADO */
+
+/* Quando o input (escondido) está checado, muda a cor do irmão (.visual-switch) */
+.switch-container input:checked + .visual-switch {
+    background-color: #ff9900;
+}
+
+/* E move a bolinha dentro dele */
+.switch-container input:checked + .visual-switch::after {
+    /* 46px (largura total) - 20px (largura bolinha) - 2px (margem inicial) = 24px */
+    left: 24px; 
+}
+
+
 #check-fonte-legivel { width: 20px; height: 20px; accent-color: #ff9900; }
 
 /* ==========================================================================
-   MODAIS (POP-UPS)
+   MODAIS (POP-UPS) - CORRIGIDO E UNIFICADO
    ========================================================================== */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
 
-/* Caixa Modal Genérica (bombada) */
+/* Caixa Modal Genérica */
 .modal-caixa { background: #0b0b0b; border: 1px solid #333; box-shadow: 0 0 30px rgba(0,0,0,0.9); padding: 35px; border-radius: 12px; max-width: 500px; width: 95%; animation: zoomIn 0.2s ease; display: flex; flex-direction: column; overflow-y: auto; max-height: 90vh; }
 @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-/* Estilos Internos do Modal */
+/* Títulos e Labels */
 .modal-caixa h3 { font-family: 'Reenie Beanie', cursive; font-size: 3.5rem; color: #ff9900; text-align: center; margin-bottom: 25px; margin-top: 0; letter-spacing: 2px; }
-.grid-modal-max { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 35px; }
+.modal-caixa label { font-family: 'Reenie Beanie', cursive; font-size: 2.0rem; color: #bbb; margin-left: 5px; display: block; margin-top: 10px; }
+
+/* Inputs, Textareas e SELECT (Menu de Cor) */
+.modal-caixa input, 
+.modal-caixa textarea, 
+.modal-caixa select,  /* <--- Adicionado: Arruma o menu de cor */
+.grid-modal-max input { 
+    background: #141414; 
+    border: 1px solid #333; 
+    border-radius: 6px; 
+    color: #fff; 
+    font-family: 'Reenie Beanie', cursive; 
+    font-size: 1.2rem; /* Tamanho padronizado */
+    padding: 8px 12px; 
+    height: 45px; 
+    outline: none; 
+    transition: 0.3s; 
+    width: 100%; 
+    box-sizing: border-box; 
+}
+
+/* Ajustes específicos */
+.modal-caixa textarea { height: 150px; font-size: 1.8rem; resize: none; }
+.modal-caixa select { cursor: pointer; appearance: none; /* Remove a seta feia padrão do windows */ }
+.modal-caixa input:focus, .modal-caixa textarea:focus, .modal-caixa select:focus { border-color: #ff9900; box-shadow: 0 0 8px rgba(255, 153, 0, 0.4); }
+
+/* Link Pequeno (+ Extra) */
+.link-pequeno { color: #888; font-size: 1rem; cursor: pointer; margin-left: 10px; text-decoration: underline; }
+.link-pequeno:hover { color: #ff9900; }
+
+/* Grid do Modal de Limites */
+.grid-modal-max { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 10px; }
 .grid-modal-max div { display: flex; flex-direction: column; gap: 8px; }
+.grid-modal-max label { margin-top: 0; } 
 
-/* Inputs e Labels do Modal */
-.modal-caixa label, .grid-modal-max label { font-family: 'Reenie Beanie', cursive; font-size: 2.0rem; color: #bbb; margin-left: 5px; display: block; }
-.modal-caixa input, .modal-caixa textarea, .grid-modal-max input { background: #141414; border: 1px solid #333; border-radius: 6px; color: #fff; font-family: 'Reenie Beanie', cursive; font-size: 2.5rem; padding: 8px 12px; height: 45px; outline: none; transition: 0.3s; width: 100%; box-sizing: border-box; }
-.modal-caixa textarea { height: 150px; font-size: 1.5rem; }
-.modal-caixa input:focus, .grid-modal-max input:focus { border-color: #ff9900; box-shadow: 0 0 8px rgba(255, 153, 0, 0.4); }
+/* --- BOTÕES DOS MODAIS (UNIFICADOS) --- */
+.modal-botoes { 
+    display: flex; 
+    justify-content: space-between; 
+    flex-direction: row; 
+    gap: 30px; 
+    width: 100%; 
+    
+    /* A CORREÇÃO DO INVENTÁRIO: */
+    margin-top: 25px; /* Empurra os botões para baixo, desgrudando da descrição */
+}
 
-/* Botões do Modal */
-.modal-botoes { display: flex; justify-content: space-between; flex-direction: row; gap: 30px; width: 100%; }
-.modal-botoes button { font-family: 'Reenie Beanie', cursive; font-size: 2.0rem; padding: 10px 0; border: none; border-radius: 6px; cursor: pointer; transition: transform 0.2s, background 0.2s; flex: 1; }
-#btn-cancelar-max, #btn-cancelar-modal { background: transparent; border: 1px solid #444; color: #888; }
-#btn-cancelar-max:hover, #btn-cancelar-modal:hover { background: #222; color: #ddd; }
-#btn-salvar-max, #btn-salvar-modal { background: #ff9900; color: #000; font-weight: bold; }
-#btn-salvar-max:hover, #btn-salvar-modal:hover { background: #e68a00; transform: scale(1.03); }
+.modal-botoes button { 
+    font-family: 'Reenie Beanie', cursive; 
+    font-size: 2.0rem; 
+    padding: 10px 0; 
+    border: none; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    transition: transform 0.2s, background 0.2s; 
+    flex: 1; 
+}
+
+/* LISTA DE TODOS OS BOTÕES "CANCELAR" */
+#btn-cancelar-max, 
+#btn-cancelar-modal, 
+#btn-cancelar-magia,
+#btn-cancelar-senha { 
+    background: transparent; 
+    border: 1px solid #444; 
+    color: #888; 
+}
+#btn-cancelar-max:hover, #btn-cancelar-modal:hover, #btn-cancelar-magia:hover { background: #222; color: #ddd; }
+
+/* LISTA DE TODOS OS BOTÕES "CONFIRMAR/SALVAR" */
+#btn-salvar-max, 
+#btn-salvar-modal, 
+#btn-salvar-magia,
+#btn-confirma-senha { 
+    background: #ff9900; 
+    color: #000; 
+    font-weight: bold; 
+}
+#btn-salvar-max:hover, #btn-salvar-modal:hover, #btn-salvar-magia:hover { background: #e68a00; transform: scale(1.03); }
+
+/* --- CORREÇÕES ESPECÍFICAS DO MODAL DE MAGIA --- */
+
+/* 1. Arrumar o tamanho da lista de Cores (Dropdown) */
+/* Isso força as opções internas a terem tamanho e fonte normais */
+.modal-caixa select option {
+    font-size: 2rem; /* Bem menor que o menu fechado */
+    font-family: 'Reenie Beanie', cursive; /* Fonte padrão para leitura fácil */
+    background: #141414; /* Garante fundo escuro */
+    color: #eee;
+    padding: 10px;
+}
+
+/* 2. Desgrudar o Input "Extra" */
+/* Adiciona margem no container que aparece ao clicar no link */
+#container-custo-extra {
+    margin-top: 15px; /* Empurra para baixo */
+}
+
+/* --- CORREÇÃO DO MENU DE CORES (SELECT) --- */
+
+.modal-caixa select {
+    /* 1. Força Bruta na Fonte */
+    font-family: 'Reenie Beanie', cursive !important; /* O !important obriga o navegador a obedecer */
+    font-size: 2.0rem;
+    color: #eee;
+    background: #141414;
+    border: 1px solid #333;
+    border-radius: 6px;
+
+    /* 2. Desliga o visual padrão do Windows/Mac */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    /* 3. Alinhamento */
+    height: 55px !important;
+    padding: 0 10px;
+    margin-top: 5px;
+    cursor: pointer;
+    width: 100%;
+
+    /* (Opcional) Adiciona uma setinha laranja personalizada, já que desligamos a padrão */
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ff9900%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    background-size: 12px auto;
+}
+
+/* Garante que o Input do lado (Custo) obedeça a mesma regra de margem */
+.modal-caixa input {
+    margin-top: 5px;
+    height: 55px !important;
+}
+
+.modal-caixa input::placeholder {
+    font-size: 2.2rem; /* Tamanho grande para combinar */
+    font-family: 'Reenie Beanie', cursive;
+    color: #555; /* Mantém cinza escuro para diferenciar do texto digitado */
+    opacity: 1; /* Garante que fique visível */
+    transform: translateY(2px); /* Pequeno ajuste vertical se precisar */
+}
+
+.modal-caixa input {
+    font-size: 2.5rem !important; /* Aumenta o texto/número branco */
+    font-family: 'Reenie Beanie', cursive !important;
+}
+
+/* (Opcional) Ajuste específico para inputs de número não cortarem a parte de baixo */
+.modal-caixa input[type="number"] {
+    line-height: 50px; /* Centraliza verticalmente */
+    padding-top: 5px;  /* Pequeno ajuste se o número parecer "voando" */
+}
 
 /* EFEITO SANFONA (EXPANDIR ITEM) */
 .item-inv { flex-direction: column; align-items: stretch; padding: 0; overflow: hidden; transition: background 0.2s; }
@@ -247,9 +451,14 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 .mostrando-detalhes .ph-caret-down { transform: rotate(180deg); }
 
 /* ÁREA DE PERÍCIAS (GRID) */
-.grid-pericias { display: grid; grid-template-columns: 1fr 1fr; column-gap: 15px; row-gap: 2px; align-content: start; }
+.grid-pericias { display: grid; grid-template-columns: 1fr 1fr; column-gap: 15px; row-gap: 2px; align-content: start; padding-bottom: 15px; }
 .pericia-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding: 5px 0; overflow: hidden; }
 .pericia-item:hover { background: rgba(255, 255, 255, 0.03); }
+
+.grid-pericias, .lista-vertical {
+    padding-right: 15px; /* Empurra o conteúdo 15px para a esquerda */
+    box-sizing: border-box; /* Garante que o padding não estoure a largura */
+}
 
 /* Nome da Perícia (com reticências ...) */
 .pericia-nome { font-size: 1rem; color: #ccc; font-family: 'Segoe UI', sans-serif; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-right: 5px; flex: 1; }
@@ -265,7 +474,7 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 
 /* LAYOUT INFERIOR (Mentais/Armas) */
 .pericias-linha-inferior { display: flex; gap: 15px; flex: 1; min-height: 0; }
-.metade-pericia { flex: 1; display: flex; flex-direction: column; overflow-y: hidden; }
+.metade-pericia { flex: 1; display: flex; flex-direction: column; overflow-y: hidden; padding-right: 15px; }
 .lista-vertical { display: flex; flex-direction: column; overflow-y: auto; padding-right: 5px; }
 .lista-vertical .pericia-item { width: 100%; }
 
@@ -375,7 +584,7 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 
 /* SWITCH FONTE */
 .preferencias-box { text-align: left; margin-bottom: 20px; }
-.preferencias-box h3 { font-family: 'Reenie Beanie', cursive; color: #ff9900; font-size: 1.2rem; margin-bottom: 15px; }
+.preferencias-box h3 { font-family: 'Reenie Beanie', cursive; color: #ff9900; font-size: 2.8rem; margin-bottom: 10px; letter-spacing: 2px; }
 .switch-container { display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: #151515; padding: 15px; border-radius: 8px; border: 1px solid #333; transition: background 0.2s; }
 .switch-container:hover { background: #222; }
 .switch-container input { display: none; }
@@ -448,3 +657,529 @@ body.modo-fonte-simples .registro-texto { font-family: Arial, sans-serif !import
 #secret-container.theme-red .skill-card-box hr { border-color: #c70000 !important; }
 #secret-container.theme-red #skill-pass-input { border-color: #c70000; color: #c70000; }
 #secret-container.theme-red #skill-pass-input::placeholder { color: rgba(199,0,0,0.5); }
+
+/* ==========================================================================
+   1. CONFIGURAÇÕES VISUAIS & ACESSIBILIDADE
+   ========================================================================== */
+
+:root {
+    --fonte-padrao: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --cor-destaque: #ff9900;
+    --bg-card: #1a1a1a;
+    --bg-escuro: #0f0f0f;
+    --borda-suave: #333;
+}
+
+body.legivel-dados .perfil-linha-inf input,
+
+body.legivel-dados .col-dados .box-dado input { font-family: var(--fonte-padrao) !important; font-size: 1.1rem !important;  font-weight: 500; letter-spacing: normal; padding-top: 5px; }
+
+body.legivel-traumas .col-traumas textarea { font-family: var(--fonte-padrao) !important; font-size: 1.1rem !important; line-height: 1.4; letter-spacing: normal; }
+
+body.legivel-registro .col-notas textarea,
+
+body.legivel-registro #anotacoes-rapidas { font-family: var(--fonte-padrao) !important; font-size: 1.1rem !important; line-height: 1.4; letter-spacing: normal; }
+
+body.legivel-magias #aba-magias li,
+body.legivel-magias #aba-magias .nome-magia { font-family: var(--fonte-padrao) !important; font-size: 1rem !important; letter-spacing: normal; }
+body.legivel-magias #aba-magias p,
+body.legivel-magias #aba-magias .desc-magia,
+body.legivel-magias #aba-magias textarea { font-family: var(--fonte-padrao) !important; font-size: 1rem !important; line-height: 1.4; letter-spacing: normal; }
+.switch-label { font-size: 1.3rem; color: #eee; margin-left: 5px; }
+.preferencias-box p { font-size: 1.1rem; color: #aaa; }
+
+/* ==========================================================================
+   2. ABA BESTIÁRIO (LAYOUT & CARDS)
+   ========================================================================== */
+
+.bestiario-container {
+    padding: 20px 30px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+/* --- Cabeçalho e Busca --- */
+.bestiario-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--borda-suave);
+    padding-bottom: 15px;
+}
+
+.bestiario-header h2 {
+    font-family: 'Reenie Beanie', cursive;
+    font-size: 3.5rem;
+    color: #eee;
+    margin: 0;
+    line-height: 1;
+}
+
+.busca-container { display: flex; gap: 12px; align-items: center; }
+
+.input-busca {
+    background: #141414;
+    border: 1px solid var(--borda-suave);
+    padding: 10px 15px;
+    border-radius: 25px;
+    color: #eee;
+    font-family: var(--fonte-padrao);
+    font-size: 1rem;
+    width: 220px;
+    outline: none;
+    transition: 0.3s;
+}
+.input-busca:focus { border-color: var(--cor-destaque); width: 250px; }
+
+
+/* --- Grade de Monstros (Grid Responsivo) --- */
+.grid-monstros {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+    gap: 20px;
+    overflow-y: auto;
+    padding-right: 5px;
+    padding-bottom: 20px;
+}
+
+/* Scrollbar Personalizada */
+.grid-monstros::-webkit-scrollbar { width: 6px; }
+.grid-monstros::-webkit-scrollbar-track { background: var(--bg-escuro); }
+.grid-monstros::-webkit-scrollbar-thumb { background: var(--borda-suave); border-radius: 3px; }
+
+
+/* --- Card do Monstro --- */
+.card-monstro {
+    background: var(--bg-card);
+    border: 1px solid var(--borda-suave);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: 0.3s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: 420px;
+}
+
+.card-monstro:hover {
+    border-color: var(--cor-destaque);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+/* Imagem do Card */
+.monstro-img-placeholder {
+    height: 55%; 
+    width: 100%;
+    background: var(--bg-escuro);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    color: #444;
+    border-bottom: 1px solid #222;
+    transition: color 0.3s;
+    flex-shrink: 0;
+}
+.card-monstro:hover .monstro-img-placeholder { color: var(--cor-destaque); }
+
+.monstro-img-placeholder img {
+    width: 100%; height: 100%;
+    object-fit: cover; 
+    object-position: top center;
+}
+
+/* Informações do Card */
+.monstro-info {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: space-between;
+}
+
+.monstro-nome {
+    font-family: 'Reenie Beanie', cursive;
+    font-size: 2.0rem;
+    color: var(--cor-destaque);
+    margin: 0;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.monstro-tipo {
+    margin: 15px 0 5px 0;
+    font-size: 1.7rem;
+    font-family: 'Reenie Beanie', cursive;
+}
+
+/* Botão de Detalhes */
+.btn-detalhes-card {
+    background: transparent;
+    border: 1px solid var(--cor-destaque);
+    color: var(--cor-destaque);
+    width: 100%;
+    padding: 12px 0;
+    margin-top: 15px;
+    font-family: 'Reenie Beanie', cursive;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-detalhes-card:hover {
+    background: var(--cor-destaque);
+    color: #000;
+    box-shadow: 0 0 15px rgba(255, 153, 0, 0.4);
+    transform: translateY(-2px);
+    font-weight: bold;
+}
+
+.btn-detalhes-card i { font-size: 1.2rem; }
+
+/* ==========================================================================
+   MODAL BESTIÁRIO (ESTILO LIVRO)
+   ========================================================================== */
+
+.modal-livro {
+    background: #0b0b0b;
+    border: 1px solid #333;
+    width: 90%;
+    max-width: 900px;
+    height: 80vh; 
+    border-radius: 10px;
+    box-shadow: 0 0 50px rgba(0,0,0,0.9);
+    position: relative;
+    display: flex;
+    overflow: hidden;
+    animation: zoomIn 0.3s ease;
+}
+
+.btn-fechar-livro {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: #666;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 10;
+}
+.btn-fechar-livro:hover { color: #ff9900; }
+
+.livro-conteudo {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.livro-col-esq {
+    width: 35%;
+    background: #0f0f0f;
+    border-right: 1px solid #333;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; 
+    gap: 15px;
+}
+
+.livro-foto-frame {
+    width: 100%;
+    aspect-ratio: 1/1; 
+    background: #000;
+    border: 1px solid #333;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#livro-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.livro-icon-fallback {
+    display: none; 
+    font-size: 5rem;
+    color: #333;
+}
+
+.livro-stats-box {
+    width: 100%;
+    background: #161616;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-family: 'Segoe UI', sans-serif;
+    border-bottom: 1px solid #222;
+    padding-bottom: 5px;
+}
+.stat-row:last-child { border: none; margin: 0; }
+
+.stat-label { color: #888; font-size: 0.9rem; }
+.stat-valor { font-weight: bold; color: #eee; font-size: 1.1rem; }
+.stat-valor.vermelho { color: #ff4d4d; }
+.stat-valor.laranja { color: #ff9900; }
+
+/* --- ATUALIZAÇÃO DO MODAL BESTIÁRIO --- */
+
+.texto-vermelho {
+    color: #ff0000; /* Vermelho sangue */
+    font-weight: bold;
+
+}
+
+.info-box-lateral {
+    width: 100%;
+}
+
+.info-box-lateral h4 {
+    color: #888;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.caixa-rolagem {
+    background: #050505;
+    border: 1px solid #222;
+    border-radius: 6px;
+    padding: 15px;
+    height: 150px;
+    overflow-y: auto;
+    width: 100%; 
+    box-sizing: border-box;
+}
+
+
+.livro-col-dir {
+    width: 65%;
+    padding: 20px 40px 0px 15px; 
+    overflow-y: auto;
+}
+
+.caixa-rolagem p {
+    font-family: 'Reenie Beanie', cursive;
+    font-size: 1.4rem;
+    color: #ccc;
+    margin: 0;
+    line-height: 1.2;
+    white-space: pre-line; 
+}
+
+.caixa-rolagem::-webkit-scrollbar { width: 6px; }
+.caixa-rolagem::-webkit-scrollbar-track { background: #000; }
+.caixa-rolagem::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+#livro-titulo {
+    font-family: 'Reenie Beanie', cursive;
+    font-size: 4rem;
+    color: #ff9900;
+    margin: 0;
+    line-height: 1;
+}
+
+#livro-tipo {
+    font-family: 'Reenie Beanie', cursive;
+    font-size: 1.8rem;
+    color: #666;
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
+
+.divisor-livro {
+    border: 0;
+    border-top: 1px solid #333;
+    margin: 10px 0;
+}
+
+.secao-texto h3 {
+    font-family: 'Segoe UI', sans-serif;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.secao-texto p {
+    font-family: 'Reenie Beanie', cursive; 
+    font-size: 1.6rem;
+    color: #ccc;
+    line-height: 1.4;
+    margin-bottom: 25px;
+}
+
+.btn-detalhes-card {
+    background: transparent;
+    border: 1px solid #333;
+    color: #888;
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.8rem;
+    transition: 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.btn-detalhes-card:hover {
+    background: #222;
+    color: #fff;
+    border-color: #555;
+}
+
+@media (max-width: 768px) {
+    .livro-conteudo { flex-direction: column; overflow-y: auto; }
+    .livro-col-esq, .livro-col-dir { width: 100%; border: none; height: auto; }
+    .livro-col-esq { padding-bottom: 0; }
+}
+
+body.legivel-bestiario #livro-titulo,
+body.legivel-bestiario #livro-tipo {
+    font-family: var(--fonte-padrao) !important;
+    letter-spacing: normal;
+}
+
+body.legivel-bestiario #livro-titulo { font-size: 2.1rem !important; } 
+body.legivel-bestiario #livro-tipo { font-size: 1.1rem !important; font-style: italic; }
+
+body.legivel-bestiario .secao-texto p, 
+body.legivel-bestiario .caixa-rolagem p { 
+    font-family: var(--fonte-padrao) !important;
+    font-size: 0.9rem !important;
+    line-height: 1.5;
+    letter-spacing: normal;
+}
+
+body.legivel-bestiario .secao-texto h3,
+body.legivel-bestiario .info-box-lateral h4 {
+    font-family: var(--fonte-padrao) !important;
+    letter-spacing: 1px;
+}
+
+/* ==========================================================================
+   4. MODAL DO SISTEMA (ALERT/CONFIRM/PROMPT)
+   ========================================================================== */
+
+/* Caixa Principal */
+.sistema-box {
+    background: #111; /* Fundo bem escuro para destaque */
+    border: 1px solid var(--cor-destaque);
+    box-shadow: 0 0 30px rgba(255, 153, 0, 0.2);
+    width: 400px;
+    max-width: 90%;
+    padding: 25px;
+    text-align: center;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    animation: fadeIn 0.2s ease-out;
+}
+
+/* Tipografia */
+#sistema-titulo {
+    font-family: 'Reenie Beanie', cursive;
+    font-size: 2.5rem;
+    color: var(--cor-destaque);
+    margin: 0;
+    line-height: 1;
+}
+
+#sistema-mensagem {
+    color: #ddd;
+    font-family: var(--fonte-padrao);
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 5px 0 15px 0;
+}
+
+/* Campo de Digitação (Prompt) */
+#sistema-input {
+    background: #222;
+    border: 1px solid #444;
+    color: #fff;
+    padding: 12px;
+    border-radius: 4px;
+    width: 100%;
+    font-family: var(--fonte-padrao);
+    font-size: 1rem;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+#sistema-input:focus {
+    border-color: var(--cor-destaque);
+    background: #1a1a1a;
+}
+
+/* Botões */
+.modal-botoes {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* Estilo Base dos Botões */
+.btn-confirm, .btn-cancel {
+    padding: 10px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--fonte-padrao);
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+/* Botão Principal (Laranja) */
+.btn-confirm {
+    background: var(--cor-destaque);
+    color: #000;
+    border: none;
+}
+.btn-confirm:hover {
+    background: #ffb340;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 153, 0, 0.3);
+}
+
+/* Botão Cancelar (Transparente) */
+.btn-cancel {
+    background: transparent;
+    border: 1px solid #444;
+    color: #888;
+}
+.btn-cancel:hover {
+    border-color: #ddd;
+    color: #ddd;
+    background: rgba(255,255,255,0.05);
+}
