@@ -75,92 +75,108 @@ if (charParaCarregar) {
 }
 
 // ==================================================================
-// 2. SISTEMA DE STATUS (Vida, Sanidade, etc)
+// 2. INPUTS, STATUS E BARRAS (CORRIGIDO)
 // ==================================================================
 
-// Função Genérica: Atualiza Valor, Barra e Memória
-const alterarStatus = (elAtual, elMax, elBarra, valor, cor, corCrit) => {
-    let atual = parseInt(elAtual.textContent) || 0;
-    let max = parseInt(elMax.textContent) || 1; // Evita divisão por zero
-    let novo = Math.max(0, Math.min(atual + valor, max)); // Garante entre 0 e Max
-
-    elAtual.textContent = novo;
-    Memoria.setItem(elAtual.id, novo);
-
-    const pct = (novo / max) * 100;
-    elBarra.style.width = `${pct}%`;
-    elBarra.style.backgroundColor = (pct <= 25) ? corCrit : cor;
+// Helper Mágico: Vincula qualquer input ao salvamento automático
+const vincularInput = (id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const salvo = Memoria.getItem(id);
+    if (salvo) el.value = salvo;
+    el.addEventListener('input', () => Memoria.setItem(id, el.value));
 };
 
-// Inicialização e Listeners Automáticos
-els.status.forEach(stat => {
-    // Busca elementos no DOM dinamicamente
-    const atual = document.getElementById(`${stat.id}-atual`);
-    const max = document.getElementById(`${stat.id}-max`);
-    const barra = document.getElementById(`${stat.bar}-bar-fill`);
-    const btnMenos = document.getElementById(`btn-${stat.bar}-menos`);
-    const btnMais = document.getElementById(`btn-${stat.bar}-mais`);
-
-    // Carrega valor salvo
-    const salvo = Memoria.getItem(atual.id);
-    if (salvo !== null) {
-        atual.textContent = salvo;
-        alterarStatus(atual, max, barra, 0, stat.cor, stat.crit);
-    }
-
-    // Adiciona cliques
-    if (btnMenos) btnMenos.onclick = () => alterarStatus(atual, max, barra, -1, stat.cor, stat.crit);
-    if (btnMais) btnMais.onclick = () => alterarStatus(atual, max, barra, 1, stat.cor, stat.crit);
-});
-
-// Salvamento de Perfil (Nome/Classe)
+// 1. Dados Pessoais & Atributos & Textos
 [
-    'nome', 'classe', 'subclasse', 'nivel', 'res', 'mov', 'idade', 'altura', 'peso', 'sorte', 'dinheiro' ].forEach(tipo => {
-    const key = `${tipo}-char`; // Gera: nome-char, nivel-char, etc.
-    const el = document.getElementById(key);
+    'nome-char', 'classe-char', 'subclasse-char', 'nivel-char', 
+    'res-char', 'mov-char', 'defesa-char', 
+    'idade-char', 'altura-char', 'peso-char', 'sorte-char', 'dinheiro-char',
+    'input-for', 'input-agi', 'input-int', 'input-pre', 'input-con', 'input-arc',
+    'temp-vida', 'temp-san', 'temp-pe', 'temp-ar', 'temp-esp',
+    'anotacoes-rapidas', 'lesoes-texto', 'traumas-texto',
+    'input-dt-global' // Seu novo input de DT
+].forEach(vincularInput);
+
+// 2. Sistema de Barras (Vida, Sanidade, PE...)
+const statusConfig = [
+    { id: 'pv', bar: 'vida', cor: '#c00', crit: '#500' },
+    { id: 'san', bar: 'san', cor: '#800080', crit: '#4b0082' },
+    { id: 'pe', bar: 'pe', cor: '#00e5ff', crit: '#00606b' },
+    { id: 'ar', bar: 'ar', cor: '#2b59c3', crit: '#10224a' },
+    { id: 'esp', bar: 'esp', cor: '#ffd700', crit: '#b39700' }
+];
+
+const alterarStatus = (id, valor, cfg) => {
+    const elAtual = document.getElementById(`${id}-atual`);
+    const elMax = document.getElementById(`${id}-max`);
+    const elBarra = document.getElementById(`${cfg.bar}-bar-fill`);
     
-    if (el) {
-        // Carrega
-        const salvo = Memoria.getItem(key);
-        if (salvo) el.value = salvo;
+    if(!elAtual || !elMax) return;
 
-        // Salva ao digitar
-        el.addEventListener('input', () => Memoria.setItem(key, el.value));
+    let atual = parseInt(elAtual.textContent) || 0;
+    let max = parseInt(elMax.textContent) || 1;
+    
+    // Atualiza o valor matemático
+    let novo = Math.max(0, Math.min(atual + valor, max));
+
+    // Salva e Atualiza Texto
+    elAtual.textContent = novo;
+    Memoria.setItem(`${id}-atual`, novo);
+
+    // Atualiza a Barra Visual
+    const pct = (novo / max) * 100;
+    if(elBarra) {
+        elBarra.style.width = `${pct}%`;
+        elBarra.style.backgroundColor = (pct <= 25) ? cfg.crit : cfg.cor;
     }
+};
+
+// --- INICIALIZAÇÃO DOS STATUS (A CORREÇÃO ESTÁ AQUI) ---
+statusConfig.forEach(stat => {
+    const elAtual = document.getElementById(`${stat.id}-atual`);
+    const elMax = document.getElementById(`${stat.id}-max`);
+
+    // 1. Força o carregamento do MÁXIMO primeiro (Ex: max-pv)
+    // Isso garante que a barra saiba o tamanho total correto
+    const maxSalvo = Memoria.getItem(`max-${stat.id}`);
+    if (maxSalvo && elMax) elMax.textContent = maxSalvo;
+
+    // 2. Carrega o valor ATUAL salvo
+    const atualSalvo = Memoria.getItem(`${stat.id}-atual`);
+    if (atualSalvo !== null && elAtual) {
+        elAtual.textContent = atualSalvo;
+    }
+
+    // 3. Chama a função com valor "0" apenas para pintar a barra corretamente
+    alterarStatus(stat.id, 0, stat);
+
+    // Listeners dos Botões
+    document.getElementById(`btn-${stat.bar}-menos`)?.addEventListener('click', () => alterarStatus(stat.id, -1, stat));
+    document.getElementById(`btn-${stat.bar}-mais`)?.addEventListener('click', () => alterarStatus(stat.id, 1, stat));
 });
 
-// Salvamento de Atributos (Força, Agi, etc)
-['for', 'agi', 'int', 'pre', 'con', 'arc'].forEach(attr => {
-    const id = `input-${attr}`;
-    const el = document.getElementById(id);
-    if (el) {
-        const salvo = Memoria.getItem(id);
-        if (salvo) el.value = salvo;
-        el.addEventListener('input', () => Memoria.setItem(id, el.value));
-    }
-});
+// --- SALVAMENTO DO DT (SEÇÃO EXTRA) ---
+const inputDT = document.getElementById('input-dt-global');
+if (inputDT) {
+    const salvoDT = Memoria.getItem('input-dt-global');
+    if (salvoDT) inputDT.value = salvoDT;
+    inputDT.addEventListener('input', () => Memoria.setItem('input-dt-global', inputDT.value));
+}
 
-// --- SISTEMA DE FOME (CASCATA) ---
+// 3. Sistema de Fome (Cascata)
 window.atualizarFome = (checkbox) => {
-    const grauClicado = parseInt(checkbox.dataset.grau);
-    const marcar = checkbox.checked;
-
-    // Loop pelos 3 checkboxes
+    const grau = parseInt(checkbox.dataset.grau);
+    const active = checkbox.checked;
+    
     for (let i = 1; i <= 3; i++) {
         const el = document.getElementById(`fome-${i}`);
-        if (marcar) {
-            // Se marquei o 3, marca 1 e 2 também
-            if (i <= grauClicado) el.checked = true;
-        } else {
-            // Se desmarquei o 1, desmarca 2 e 3 também
-            if (i >= grauClicado) el.checked = false;
+        if ((active && i <= grau) || (!active && i >= grau)) {
+            el.checked = active;
         }
-        // Salva cada um individualmente
         Memoria.setItem(`fome-${i}`, el.checked);
     }
 };
-
-// Carregar Fome ao iniciar
 [1, 2, 3].forEach(i => {
     const el = document.getElementById(`fome-${i}`);
     if (el) el.checked = Memoria.getItem(`fome-${i}`) === 'true';
@@ -236,24 +252,24 @@ const ativarAba = (btnAtivo, divAtiva) => {
 };
 
 // Lógica de Senha
-const configurarModalSenha = () => {
-    const nome = els.nome.value.trim();
-    const dados = PERSONAGENS[nome];
+//const configurarModalSenha = () => {
+    //const nome = els.nome.value.trim();
+   //const dados = PERSONAGENS[nome];
 
-    if (dados) {
-        uiSenha.msg.innerText = dados.msg;
-        uiSenha.msg.style.color = "#ff9900";
-        hashExigido = dados.hash;
-    } else {
-        uiSenha.msg.innerHTML = "As correntes o protegem.<br>O selo NÃO te quer aqui.";
-        uiSenha.msg.style.color = "#f00";
-        hashExigido = HASH_PADRAO;
-    }
+    //if (dados) {
+        //uiSenha.msg.innerText = dados.msg;
+        //uiSenha.msg.style.color = "#ff9900";
+        //hashExigido = dados.hash;
+    //} else {
+        //uiSenha.msg.innerHTML = "As correntes o protegem.<br>O selo NÃO te quer aqui.";
+        //uiSenha.msg.style.color = "#f00";
+        //hashExigido = HASH_PADRAO;
+    //}
     
-    uiSenha.modal.classList.remove('escondido');
-    uiSenha.input.value = '';
-    uiSenha.input.focus();
-};
+    //uiSenha.modal.classList.remove('escondido');
+    //uiSenha.input.value = '';
+    //uiSenha.input.focus();
+//};
 
 const tentarDesbloquear = () => {
     if (gerarHash(uiSenha.input.value) === hashExigido) {
@@ -460,9 +476,9 @@ renderizarInventario();
 // ==================================================================
 
 const listasPericias = {
-    fisicas: ["Acrobacia", "Atletismo", "Fortitude", "Furtividade", "Iniciativa", "Luta", "Pontaria", "Reflexos"],
-    mentais: ["Adestramento", "Medicina", "Arcano", "Percepção", "Artes", "Pilotagem", "Crime", "Profissão", "Diplomacia", "Religião", "Enganação", "Sobrevivência", "Intimidação", "Tática", "Intuição", "Tecnologia", "Investigação", "Vontade"],
-    armas: ["Armas Curtas", "Armas Longas", "Armas Pesadas", "Arremesso", "Lâminas"]
+    fisicas: ["Acrobacia (Agi)", "Atletism (For)", "Furtividade (Agi)", "Iniciativa (Agi)", "Luta (For)", "Pilotagem (Agi)", "Prestidigitação (Agi)", "Reflexos (Agi)", "Vontade (Pre)"  ],
+    mentais: ["Adestramento (Pre)", "Intimidação (Pre)", "Alquimia (Int)", "Intuição (Pre)", "Arcano (Arc)", "Investigação (Int)", "Artes (Int)", "Medicina (Int)", "Biologia (Int)", "Percepção (Pre)", "Curiosidade (Pre)", "Profissão (Pre)", "Diplomacia (Pre)", "Psicologia (Pre)", "Enganação (Pre)", "Química (Int)", "Engenharia (Int)", "Sobrevivência (Int)", "Herbologia (Int)", "Tática (Int)", "História (Int)", "Tecnologia (Int)"],
+    armas: ["A. Branca Leves (Agi)", "A. Branca Longas (Agi/For)", "A. Branca Pesadas (For)", "Arremesso (Agi)", "A. Fogo Leves (Agi)", "A. Fogo Pesadas (For)", "Metralhadoras (For)", "Rifles de Precisão (Agi)"]
 };
 
 const preencherLista = (containerId, lista) => {
@@ -567,7 +583,7 @@ preencherLista('container-armas', listasPericias.armas);
 });
 
 // ==================================================================
-// 9. SISTEMA DE MAGIAS (OTIMIZADO)
+// 9. SISTEMA DE MAGIAS (COM SWITCH PE/ARC)
 // ==================================================================
 
 const uiMagia = {
@@ -578,8 +594,13 @@ const uiMagia = {
         custo: document.getElementById('magia-custo'),
         extra: document.getElementById('magia-custo-extra'),
         desc: document.getElementById('magia-desc'),
-        cor: document.getElementById('magia-elemento-select')
+        cor: document.getElementById('magia-elemento-select'),
+        maestria: document.getElementById('magia-maestria') 
     },
+
+    wrapperCusto: document.getElementById('box-custo-wrapper'),
+    btnSwitch: document.getElementById('btn-switch-custo'),
+    
     btns: {
         add: document.getElementById('btn-add-magia'),
         save: document.getElementById('btn-salvar-magia'),
@@ -589,27 +610,80 @@ const uiMagia = {
     containerExtra: document.getElementById('container-custo-extra')
 };
 
+// Variáveis de Estado
 let listaMagias = JSON.parse(Memoria.getItem('minhas-magias')) || [];
+let tipoCustoAtual = 'PE'; // Padrão inicial
 
-// --- RENDERIZAÇÃO (Template Strings) ---
+// --- LÓGICA DO SWITCH VISUAL ---
+if (uiMagia.btnSwitch) {
+    uiMagia.btnSwitch.addEventListener('click', () => {
+        // Alterna entre PE e ARC
+        tipoCustoAtual = (tipoCustoAtual === 'PE') ? 'ARC' : 'PE';
+        atualizarVisualSwitch();
+    });
+}
+
+function atualizarVisualSwitch() {
+    if (!uiMagia.wrapperCusto) return;
+    
+    // Remove as classes antigas
+    uiMagia.wrapperCusto.classList.remove('modo-pe', 'modo-arc');
+    
+    // Adiciona a classe certa
+    if (tipoCustoAtual === 'PE') {
+        uiMagia.wrapperCusto.classList.add('modo-pe');
+    } else {
+        uiMagia.wrapperCusto.classList.add('modo-arc');
+    }
+}
+
+// --- RENDERIZAÇÃO DOS CARDS ---
 const renderizarMagias = () => {
-    uiMagia.lista.innerHTML = listaMagias.map((m, i) => {
-        // Gera o HTML do Custo Extra apenas se existir
-        const htmlExtra = (m.custoExtra && m.custoExtra.trim()) 
-            ? `<span class="magia-custo" style="border-color: #555; color: #aaa; margin-left: 5px; font-size: 0.7rem;">${m.custoExtra}</span>` 
-            : '';
+    if (!uiMagia.lista) return;
 
+    uiMagia.lista.innerHTML = listaMagias.map((m, i) => {
+        // 1. Identifica os custos (Ficam no Rodapé)
+        const labelTipo = m.tipoCusto || 'PE';
+        const tagCusto = `<span class="magia-tag" style="color:${m.cor}; border-color:${m.cor}">${m.custo} ${labelTipo}</span>`;
+        
+        const tagExtra = (m.custoExtra && m.custoExtra.trim()) 
+            ? `<span class="magia-tag tag-extra">${m.custoExtra}</span>` : '';
+        
+        // 2. Lógica da Imagem de Maestria (Vai para o Topo)
+        let tagMaestria = '';
+        const valorMaestria = m.maestria; // Pega o valor salvo
+        
+        if (valorMaestria) {
+            // Pega apenas o número (ex: "Opcao 2" vira "2")
+            const numeroEncontrado = String(valorMaestria).match(/\d+/);
+            if (numeroEncontrado) {
+                const numero = numeroEncontrado[0];
+                tagMaestria = `<img src="img/maestria-${numero}.png" class="icone-maestria" title="Maestria ${numero}">`;
+            }
+        }
+
+        // 3. Monta o novo HTML do Card
         return `
         <div class="magia-card" style="border-color: ${m.cor}; box-shadow: 0 0 5px ${m.cor}40">
+            
             <div class="card-topo">
-                <h3 class="magia-nome" style="color: ${m.cor}">${m.nome}</h3>
-                <div style="display: flex; align-items: center;">
-                    <span class="magia-custo" style="color: ${m.cor}; border-color: ${m.cor}">${m.custo} PE</span>
-                    ${htmlExtra}
+                <div class="card-nome-grupo">
+                    <h3 class="magia-nome" style="color: ${m.cor}">${m.nome}</h3>
+                    ${tagMaestria}
                 </div>
+                <button class="btn-del-magia" onclick="deletarMagia(${i})">
+                    <i class="ph ph-trash"></i>
+                </button>
             </div>
-            <p class="magia-texto">${m.desc}</p>
-            <button class="btn-del-magia" onclick="deletarMagia(${i})"><i class="ph ph-trash"></i></button>
+            
+            <div class="card-corpo">
+                <p class="magia-texto">${m.desc}</p>
+            </div>
+            
+            <div class="card-rodape">
+                ${tagCusto}
+                ${tagExtra}
+            </div>
         </div>`;
     }).join('');
 
@@ -618,15 +692,20 @@ const renderizarMagias = () => {
 
 // --- AÇÕES ---
 const salvarMagia = () => {
-    const { nome, custo, extra, desc, cor } = uiMagia.inputs;
+
+    const { nome, custo, extra, desc, cor, maestria } = uiMagia.inputs;
     
-    if (!nome.value.trim()) return alert("Dê um nome ao ritual!");
+    if (!nome.value.trim()) return alert("Nome obrigatório!");
+
+    const valorMaestria = maestria ? maestria.value : "";
 
     listaMagias.push({
         nome: nome.value,
         custo: custo.value || '0',
+        tipoCusto: tipoCustoAtual,
         custoExtra: extra.value,
         cor: cor.value,
+        maestria: valorMaestria,
         desc: desc.value
     });
 
@@ -644,33 +723,25 @@ window.deletarMagia = (index) => {
 // --- UI CONTROL ---
 const abrirModalMagia = () => {
     uiMagia.modal.classList.remove('escondido');
-    
-    // Limpa campos
     Object.values(uiMagia.inputs).forEach(input => input.value = '');
     
-    // Reseta estado do custo extra
-    uiMagia.containerExtra.classList.add('escondido');
-    uiMagia.btns.addCusto.classList.remove('escondido');
+    // Reseta o Switch para PE sempre que abrir
+    tipoCustoAtual = 'PE';
+    atualizarVisualSwitch();
     
-    uiMagia.inputs.nome.focus();
+    setTimeout(() => uiMagia.inputs.nome.focus(), 50);
 };
 
 const fecharModalMagia = () => uiMagia.modal.classList.add('escondido');
 
 // Listeners
-uiMagia.btns.add.onclick = abrirModalMagia;
-uiMagia.btns.save.onclick = salvarMagia;
-uiMagia.btns.cancel.onclick = fecharModalMagia;
+if (uiMagia.btns.add) uiMagia.btns.add.onclick = abrirModalMagia;
+if (uiMagia.btns.save) uiMagia.btns.save.onclick = salvarMagia;
+if (uiMagia.btns.cancel) uiMagia.btns.cancel.onclick = fecharModalMagia;
 
-uiMagia.btns.addCusto.onclick = () => {
-    uiMagia.btns.addCusto.classList.add('escondido');
-    uiMagia.containerExtra.classList.remove('escondido');
-    uiMagia.inputs.extra.focus();
-};
 
 // Inicializa
 renderizarMagias();
-
 
 // ==================================================================
 // 10. PREFERÊNCIAS VISUAIS
@@ -1258,6 +1329,9 @@ const mapaNavegacao = {
     'btn-menu-secret': 'secret-container'
 };
 
+// 1. Puxa o elemento de áudio que você criou no HTML
+const audioSecreto = document.getElementById('audio-secreto');
+
 Object.keys(mapaNavegacao).forEach(btnId => {
     const btn = document.getElementById(btnId);
     const divId = mapaNavegacao[btnId];
@@ -1265,7 +1339,10 @@ Object.keys(mapaNavegacao).forEach(btnId => {
     if (btn) {
         btn.addEventListener('click', function() {
             // Esconde todas as abas
-            Object.values(mapaNavegacao).forEach(id => document.getElementById(id)?.classList.add('escondido'));
+            Object.values(mapaNavegacao).forEach(id => {
+                const aba = document.getElementById(id);
+                if (aba) aba.classList.add('escondido');
+            });
             
             // Mostra a alvo
             const alvo = document.getElementById(divId);
@@ -1278,6 +1355,23 @@ Object.keys(mapaNavegacao).forEach(btnId => {
             // Atualiza Menu
             document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('ativo'));
             this.classList.add('ativo');
+
+            // =========================================================
+            // LÓGICA DO ÁUDIO DA ABA SECRETA
+            // =========================================================
+            if (audioSecreto) {
+                if (divId === 'secret-container') {
+                    // Se abriu a aba secreta, dá o play
+                    audioSecreto.volume = 0.5; // Ajuste o volume (0.0 a 1.0)
+                    
+                    // O catch previne um erro caso o navegador bloqueie o som inicial
+                    audioSecreto.play().catch(e => console.log("Áudio bloqueado temporariamente:", e)); 
+                } else {
+                    // Se clicou em qualquer outra aba, pausa e zera o tempo
+                    audioSecreto.pause();
+                    audioSecreto.currentTime = 0; 
+                }
+            }
         });
     }
 });
@@ -1342,3 +1436,74 @@ function configurarModal(titulo, msg, tipo, resolve) {
     
     if (tipo === 'prompt') el.input.onkeydown = (e) => { if (e.key === 'Enter') novoOk.click(); };
 }
+
+
+/* ==========================================================================
+   EFEITO: PALAVRAS ASSOMBRADAS (ABA SECRET)
+   ========================================================================== */
+
+// 1. A sua lista de palavras (pode adicionar quantas quiser)
+const palavrasMacabras = [
+    "Sofrimento", "Dor", "Fome", "Vazio", "Sangue", 
+    "Escuridão", "Ninguém escapa", "selo", "Correntes", 
+    "Frio", "Estamos aqui", "Culpado", "Desespero",
+    "Alma", "Socorro", "Perdão", "Quebre", "Liberte-se",
+    "Morra", "Medo", "Ganância", "Agonia", "Terror",
+    "Pânico", "Loucura", "Angústia", "Delírio", "Tormento",
+    "Luto", "Rancor", "Paranóia", "Remorso", "Aflição",
+    "Podridão", "Decadência", "Ossos", "Cinzas",
+    "Carnificina", "Cicatriz", "Ferida aberta", "Veneno",
+    "Cadáver", "Vermes", "Lâmina", "Mutilação", "Vísceras",
+    "Putrefação", "Abismo", "Maldição", "Sombras", "Pesadelo",
+    "Pacto", "Sacrifício", "Ritual", "Profanação", "Pecado",
+    "Ruína", "Devastação", "Silêncio absoluto", "Oculto",
+    "Rasgue", "Rasteje", "Devore", "Sufoque", "Apodreça",
+    "Espreite", "Condene", "Enterre", "Ajoelhe-se", "Chore",
+    "Padeça", "Nâo olhe para trás", "Ele está vindo",
+    "É tarde demais", "Ouça os gritos", "Fique conosco",
+    "Tudo queima", "Não há saída", "Feche os olhos",
+    "Eles sabem o que você fez", "Apenas ceda", "A carne é fraca",
+    "Sua mente nos pertence", "GRITE POR AJUDA", "Sem salvação",
+    "Abandone suas esperanças", "Mentiroso"
+];
+
+const spawnPalavraAssombrada = () => {
+    const container = document.getElementById('container-palavras-assombradas');
+    const abaSecret = document.getElementById('secret-container');
+    
+    // Trava de segurança: Só cria palavras se a aba Secret estiver aberta/visível
+    if (!container || !abaSecret || abaSecret.classList.contains('escondido')) return;
+
+    // Cria o elemento da palavra
+    const palavra = document.createElement('span');
+    palavra.className = 'palavra-assombrada';
+    
+    // Sorteia a palavra
+    palavra.textContent = palavrasMacabras[Math.floor(Math.random() * palavrasMacabras.length)];
+
+    // =========================================================
+    // VOLTAMOS PARA A MATEMÁTICA SIMPLES (ESPALHAR POR TUDO)
+    // =========================================================
+    // Sorteia a posição (entre 5% e 95% da tela para um espalhamento total)
+    palavra.style.left = Math.floor(Math.random() * 90 + 5) + '%';
+    palavra.style.top = Math.floor(Math.random() * 90 + 5) + '%';
+    
+    // Sorteia um tamanho (sensação de profundidade)
+    palavra.style.fontSize = (Math.random() * 2 + 2) + 'rem'; // Entre 1.5rem e 3rem
+
+    // Adiciona na tela
+    container.appendChild(palavra);
+
+    // Lógica do Fade-In e Fade-Out (Igual antes)
+    setTimeout(() => {
+        palavra.style.opacity = (Math.random() * 0.4 + 0.3).toFixed(1); 
+    }, 100);
+
+    setTimeout(() => {
+        palavra.style.opacity = '0'; 
+        setTimeout(() => palavra.remove(), 2000); 
+    }, 3000 + Math.random() * 3000); 
+};
+
+// Dispara o criador de palavras a cada 2 segundos
+setInterval(spawnPalavraAssombrada, 2000);

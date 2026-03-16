@@ -13,7 +13,7 @@ h1, h2, h3 { margin-top: 0; }
    SIDEBAR & NAVEGAÇÃO
    ========================================================================== */
 #sidebar { width: 75px; background: #050505; border-right: 1px solid #333; display: flex; flex-direction: column; align-items: center; padding-top: 30px; z-index: 10; }
-.menu-item { background: none; border: none; color: #666; font-size: 1.8rem; padding: 15px; cursor: pointer; border-radius: 12px; margin-bottom: 10px; transition: 0.3s; position: relative; }
+.menu-item { background: none; border: none; color: #666; font-size: 1.8rem; padding: 15px; cursor: pointer; border-radius: 12px; margin-bottom: 10px; transition: 0.3s; position: relative; overflow: hidden; }
 .menu-item:hover, .menu-item.ativo { background-color: #222; color: #ff9900; }
 .menu-item.ativo { border-left: 3px solid #ff9900; }
 .tooltip { display: none; }
@@ -503,24 +503,30 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 
 /* GRID E CARDS */
 .magias-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 10px 20px; }
-.magia-card { background: #0f0f0f; border: 1px solid #333; border-radius: 8px; padding: 15px; position: relative; transition: transform 0.2s, border-color 0.2s; display: flex; flex-direction: column; gap: 5px; }
+.magia-card { background: #111; border: 1px solid #333; border-radius: 8px; padding: 15px; position: relative; transition: transform 0.2s, border-color 0.2s; display: flex; flex-direction: column; gap: 5px; min-height: 200px; }
 .magia-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
 
 /* Conteúdo do Card */
-.card-topo { display: flex; justify-content: space-between; align-items: start; }
-.magia-nome { font-family: 'Reenie Beanie', cursive; font-size: 1.8rem; color: #ff9900; margin: 0; line-height: 1; }
+.magia-card .card-topo { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; padding-right: 40px; }
+.magia-card .magia-nome { font-family: 'Reenie Beanie', cursive; font-size: 2.0rem; color: #ff9900; margin: 0; line-height: 1; }
 .magia-custo { background: #111; border: 1px solid #ff9900; color: #ff9900; font-size: 0.8rem; font-weight: bold; padding: 2px 8px; border-radius: 12px; }
 .magia-elemento { font-size: 0.85rem; color: #888; font-style: italic; text-transform: uppercase; letter-spacing: 1px; }
+.magia-card .card-corpo { flex-grow: 1; }
+.magia-card .card-rodape { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; border-top: 1px solid #222; padding-top: 12px; margin-top: auto; }
+.magia-tag { padding: 3px 10px; border-radius: 12px; font-size: 0.8rem; font-family: 'Segoe UI', sans-serif; font-weight: bold; border: 1px solid; background: rgba(0, 0, 0, 0.126); }
+.magia-tag:hover { transform: scale(1.2); }
+.magia-tag.tag-extra { color: #aaa; border-color: #444; }
+.magia-tag.tag-maestria { color: #fff; background: #333; border-color: #555; text-transform: uppercase; letter-spacing: 1px; }
 
 /* Descrição com Scroll */
-.magia-texto { font-size: 0.95rem; color: #ccc; line-height: 1.4; white-space: pre-wrap; word-break: break-word; max-height: 130px; overflow-y: auto; padding-right: 5px; }
+.magia-card .magia-texto { font-size: 0.95rem; color: #ddd; line-height: 1.4; font-family: 'Segoe UI', sans-serif; white-space: pre-wrap; word-break: break-word; margin: 0 0 15px 0; }
 .magia-texto::-webkit-scrollbar { width: 6px; }
 .magia-texto::-webkit-scrollbar-track { background: transparent; }
 .magia-texto::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
 .magia-texto::-webkit-scrollbar-thumb:hover { background: #ff9900; }
 
-.btn-del-magia { position: absolute; bottom: 10px; right: 10px; background: none; border: none; color: #444; cursor: pointer; font-size: 1.2rem; }
-.btn-del-magia:hover { color: #c00; }
+.magia-card .btn-del-magia { position: absolute; bottom: 10px; right: 10px; background: transparent; border: none; color: #555; cursor: pointer; font-size: 1.3rem; transition: 0.2s; padding: 0; }
+.magia-card .btn-del-magia:hover { color: #ff4d4d; }
 
 /* SELEÇÃO DE CORES & ELEMENTOS (MODAL) */
 .selecao-cores { display: flex; gap: 15px; margin-top: 5px; align-items: center; height: 40px; }
@@ -537,32 +543,8 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 .link-pequeno { font-size: 0.8rem; color: #666; cursor: pointer; margin-top: 5px; display: inline-block; transition: color 0.2s; text-decoration: underline; }
 .link-pequeno:hover { color: #ff9900; }
 
-#magia-desc { width: 100%; height: 100px; background: #0a0a0a; border: 1px solid #333; color: #eee; padding: 10px; border-radius: 4px; font-family: 'Segoe UI', sans-serif; resize: none; box-sizing: border-box; margin-top: 5px; display: block; }
+#magia-desc { width: 100%; height: 100px; background: #0a0a0a; border: 1px solid #333; color: #eee; padding: 10px; border-radius: 4px; font-family: 'Segoe UI', sans-serif; resize: none; box-sizing: border-box; margin-top: 5px; display: block; font-size: 1rem; }
 #magia-desc:focus { border-color: #ff9900; outline: none; }
-
-/* ABA SECRET (BASE) */
-#secret-container { height: 100%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at center, #1a0f00 0%, #000 80%); position: relative; overflow: hidden; }
-.segredo-placeholder { text-align: center; color: #333; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.segredo-placeholder i { font-size: 4rem; opacity: 0.3; }
-.segredo-placeholder h2 { font-family: 'Reenie Beanie', cursive; font-size: 2.5rem; margin: 0; opacity: 0.5; }
-.segredo-placeholder p { color: #555; font-style: italic; }
-
-/* BOTÃO DE CORRENTES */
-#btn-menu-secret { position: relative; overflow: hidden; background: #050505; }
-.camada-correntes { position: absolute; inset: 0; pointer-events: none; z-index: 5; display: flex; align-items: center; justify-content: center; }
-.corrente-svg { position: absolute; width: 140%; height: auto; opacity: 0.9; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.8)); }
-.c1 { transform: rotate(45deg); } .c2 { transform: rotate(-45deg); }
-
-/* Animação Hover Correntes */
-#btn-menu-secret:hover .corrente-svg { animation: tremer 0.3s infinite; }
-#btn-menu-secret:hover .corrente-svg path { fill: #500 !important; stroke: #f00; stroke-width: 5px; }
-#btn-menu-secret:hover .c2 { animation: tremer2 0.3s infinite; }
-@keyframes tremer { 0%, 100% { transform: rotate(45deg); } 25% { transform: rotate(45deg) translate(1px, 1px); } 50% { transform: rotate(45deg) translate(-1px, -1px); } }
-@keyframes tremer2 { 0%, 100% { transform: rotate(-45deg); } 25% { transform: rotate(-45deg) translate(-1px, 1px); } 50% { transform: rotate(-45deg) translate(1px, -1px); } }
-
-/* Animação Erro */
-.erro-animacao { animation: shake 0.3s; border-color: red !important; }
-@keyframes shake { 0%, 100% { transform: translateX(0); } 25%, 75% { transform: translateX(-5px); } 50% { transform: translateX(5px); } }
 
 /* ABA CONFIGURAÇÃO */
 #config-container { padding: 40px; display: flex; justify-content: center; align-items: flex-start; }
@@ -1183,3 +1165,369 @@ body.legivel-bestiario .info-box-lateral h4 {
     color: #ddd;
     background: rgba(255,255,255,0.05);
 }
+
+/* ==========================================================================
+   BOX DT (DIFICULDADE DO TESTE)
+   ========================================================================== */
+
+.box-dt {
+    display: flex;
+    align-items: center;
+    border: 2px solid #555; /* Borda cinza arredondada */
+    border-radius: 8px;
+    padding: 2px 10px ;
+    background: #0f0f0f;
+    height: 35px; /* Altura parecida com o botão */
+}
+
+.box-dt span {
+    font-family: 'Reenie Beanie', cursive; /* Ou 'Reenie Beanie' se preferir manuscrito */
+    font-weight: bold;
+    color: #ff9900; /* Laranja */
+    font-size: 1.5rem;
+    margin-right: 5px;
+}
+
+.box-dt input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    width: 40px;
+    font-size: 2.2rem;
+    text-align: center;
+    font-family: 'Reenie Beanie', cursive;
+    outline: none;
+}
+
+/* Remove as setinhas de número do input (pra ficar limpo) */
+.box-dt input::-webkit-outer-spin-button,
+.box-dt input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* ==========================================================================
+   SWITCH CUSTO (PE / ARC)
+   ========================================================================== */
+
+/* O Container que "finge" ser o input */
+.custo-wrapper {
+    display: flex;
+    align-items: center;
+    background: #1a1a1a; /* Cor de fundo do input */
+    border: 1px solid #333;
+    border-radius: 4px;
+    height: 50px; /* Altura fixa para alinhar com o Select */
+    transition: 0.3s all;
+    overflow: hidden;
+    width: 100%;
+    margin-top: 7px;
+}
+
+/* O Input real (fica transparente dentro do container) */
+.custo-wrapper input {
+    border: none !important;
+    background: transparent !important;
+    height: 100%;
+    width: 100%;
+    color: #fff;
+    padding-left: 10px;
+    padding-bottom: 20px;
+    outline: none;
+}
+
+/* O Botão Switch (Lado Direito) */
+.switch-tipo-custo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 0 12px;
+    height: 120%;
+    background: rgba(255,255,255,0.05);
+    cursor: pointer;
+    user-select: none;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.9rem;
+    font-weight: bold;
+    border-left: 1px solid #333;
+    transition: background 0.2s;
+    min-width: 60px;
+}
+.switch-tipo-custo:hover { background: rgba(255,255,255,0.1); }
+
+/* --- ESTADOS (Muda a cor da borda e do texto) --- */
+
+/* MODO PE (Ciano) */
+.custo-wrapper.modo-pe { border-color: #00e5ff; box-shadow: 0 0 5px rgba(0, 229, 255, 0.2); }
+.modo-pe .lbl-pe { color: #00e5ff; text-shadow: 0 0 5px #00e5ff; }
+.modo-pe .lbl-arc { color: #555; }
+
+/* MODO ARC (Azul Escuro) */
+.custo-wrapper.modo-arc { border-color: #2b59c3; box-shadow: 0 0 5px rgba(43, 89, 195, 0.4); }
+.modo-arc .lbl-arc { color: #4a80ff; text-shadow: 0 0 5px #2b59c3; }
+.modo-arc .lbl-pe { color: #555; }
+
+/* Divisor */
+.lbl-div { color: #444; margin: 0 2px; }
+
+/* Inputs secundários (Custo Extra e Nova Opção) */
+#magia-custo-extra,
+#magia-maestria {
+    width: 100%;
+    height: 35px; /* Mesmo tamanho nas duas colunas */
+    background: #111;
+    border: 1px solid #333;
+    color: #ccc;
+    border-radius: 4px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1.9rem;
+    outline: none;
+    transition: 0.3s border-color;
+    cursor: pointer;
+}
+
+#magia-custo-extra:focus,
+#magia-maestria:focus {
+    border-color: #ff9900;
+    color: #fff;
+    background: #1a1a1a;
+}
+
+/* Ícone de Maestria no rodapé do Card */
+.icone-maestria {
+    position: absolute;
+    top: 15px;          
+    right: 15px;        
+    
+    height: 32px;      
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    transition: 0.2s transform;
+    margin: 0; 
+}
+
+.icone-maestria:hover {
+    transform: scale(1.8); 
+}
+
+.magia-card .card-nome-grupo {
+    display: flex;
+    align-items: center;
+}
+
+/* ==========================================================================
+   ABA SECRET (BASE COM PULSO DE SANGUE)
+   ========================================================================== */
+
+#secret-container { 
+    height: 100%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    /* Fundo base: Quase preto, mas com uma essência vermelha no centro */
+    background: radial-gradient(circle at center, #000000 0%, #000000 80%); 
+    position: relative; 
+    overflow: hidden;
+    z-index: 1; /* Garante que o texto fique por cima do brilho */
+}
+
+/* A Camada do Pulso Vermelho */
+#secret-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* A luz vermelha que vai piscar */
+    background: radial-gradient(circle at center, rgba(0, 0, 0, 0.819) 0%, rgba(0, 0, 0, 0) 70%);
+    z-index: -1; /* Joga a luz para trás dos textos e selos */
+    pointer-events: none; /* Não atrapalha os cliques */
+    
+}
+
+/* --- O Texto do Segredo (Ajustado para combinar com o vermelho) --- */
+.segredo-placeholder { 
+    text-align: center; 
+    color: #333; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 10px; 
+}
+.segredo-placeholder i { 
+    font-size: 5rem; /* Aumentei um pouquinho pra dar impacto */
+    opacity: 0.4; 
+    color: #500; /* Tom de sangue seco no ícone */
+}
+.segredo-placeholder h2 { 
+    font-family: 'Reenie Beanie', cursive; 
+    font-size: 3rem; 
+    margin: 0; 
+    opacity: 0.7; 
+    color: #ff1a1a; /* Vermelho mais vivo no título */
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+}
+.segredo-placeholder p { 
+    color: #666; 
+    font-style: italic; 
+}
+
+/* ==========================================================================
+   IMAGEM CENTRAL: APARIÇÃO NO PULSO (CORRIGIDO)
+   ========================================================================== */
+
+.selo-assombrado {
+    /* --- CENTRALIZAÇÃO ABSOLUTA --- */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* Mantemos o transform para centralizar, mas cuidado com scale */
+    transform: translate(-50%, -50%) scale(0.9);
+    z-index: 10;
+
+    /* --- TAMANHO --- */
+    width: 700px;
+    height: auto;
+    object-fit: contain;
+
+    /* --- REMOVER TRAÇOS (O TRUQUE) --- */
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background-color: transparent !important; /* Força fundo transparente */
+
+    /* 1. O CORTADOR (O TRUQUE PRINCIPAL) */
+    /* Cortamos apenas 1% de cada lado para remover o traço original. */
+    /* Se sua imagem for um selo circular, tente: clip-path: circle(49%); */
+    clip-path: inset(1% 1% 1% 1% round 1px); /* Tente round 1px para suavizar cantos */
+    /* Se a imagem for circular, use esta: */
+    /* clip-path: circle(49%); */ /* Corta 1% das bordas externas de um círculo */
+
+    /* 2. O SUAVIZADOR */
+    /* Adicionamos um leve blur e diminuímos o brilho para esconder o corte */
+    filter: blur(0.5px) brightness(0.8) !important;
+
+    /* --- VISIBILIDADE INICIAL (Sincronizado com o pulso) --- */
+    opacity: 0;
+    animation: revelarSeloCorteSeguro 1s ease-in-out infinite;
+}
+
+/* A LÓGICA DE APARIÇÃO NO PICO DO PULSO (Sincronizado com o pulso de fundo) */
+@keyframes revelarSeloCorteSeguro {
+    0% { 
+        opacity: 0.5; /* Invisível */
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    20% {
+        opacity: 0.5; /* Ainda invisível até o pulso ficar forte */
+        transform: translate(-50%, -50%) scale(1); /* Expande para o tamanho normal */
+    }
+
+    30% { 
+        opacity: 0.5; /* Ainda invisível até o pulso ficar forte */
+        transform: translate(-50%, -50%) scale(1.1); /* Expande para o tamanho normal */
+    }
+
+    40%{
+        opacity: 0.5; /* Ainda invisível até o pulso ficar forte */
+        transform: translate(-50%, -50%) scale(1); /* Expande para o tamanho normal */
+    }
+
+    50% {
+        opacity: 0.5; /* Ainda invisível até o pulso ficar forte */
+        transform: translate(-50%, -50%) scale(1); /* Expande para o tamanho normal */
+    }
+
+    60% { 
+        opacity: 0.5; /* APARECE NO PICO (exatamente aos 1.5 segundos) */
+        transform: translate(-50%, -50%) scale(1.1); /* Expande para o tamanho normal */
+    }
+
+    70% { 
+        opacity: 0.5; /* APARECE NO PICO (exatamente aos 1.5 segundos) */
+        transform: translate(-50%, -50%) scale(1); /* Expande para o tamanho normal */
+    }
+    
+    100% { 
+        opacity: 0.5; /* Invisível até o próximo ciclo */
+        transform: translate(-50%, -50%) scale(1); /* Termina expandindo levemente */
+    }
+}
+
+/* ==========================================================================
+   PALAVRAS ASSOMBRADAS (ABA SECRET)
+   ========================================================================== */
+
+#container-palavras-assombradas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Garante que as palavras não bloqueiem seus cliques */
+    z-index: 20; 
+    overflow: hidden;
+}
+
+.palavra-assombrada {
+    position: absolute;
+    color: #900; /* Vermelho sangue escuro */
+    font-family: 'Reenie Beanie', cursive; /* A fonte manuscrita que você já usa */
+    opacity: 0; /* Começa invisível */
+    transition: opacity 2s ease-in-out; /* O segredo do Fade-In e Fade-Out suave */
+    text-shadow: 0 0 8px rgba(255, 0, 0, 0.4); /* Leve brilho macabro */
+}
+
+/* Tamanho do novo ícone de imagem no menu lateral */
+.icone-menu-personalizado {
+    width: 24px;  /* Tamanho ideal para alinhar com os outros ícones do menu */
+    height: 24px;
+    object-fit: contain;
+    position: relative;
+    z-index: 2; /* Fica abaixo das correntes */
+    transition: 0.3s filter, 0.3s opacity;
+}
+
+/* Deixa a imagem mais "apagada" quando a aba não está ativa, igual os outros ícones */
+.menu-item:not(.ativo) .icone-menu-personalizado {
+    opacity: 0.6;
+    filter: grayscale(100%);
+}
+
+.menu-item:hover .icone-menu-personalizado,
+.menu-item.ativo .icone-menu-personalizado {
+    opacity: 1;
+    filter: grayscale(0%);
+}
+
+
+/* O preenchimento (fill) para quando passar o mouse */
+#btn-menu-secret:hover {
+    fill: #800 !important; /* Vermelho escuro ao tremer */
+    stroke: #f00;
+    stroke-width: 10px;
+}
+
+/* Ajuste do ícone personalizado para não sumir */
+.icone-menu-personalizado {
+    width: 50px;
+    height: 50px;
+    transform: translate(-20%, -20%);
+    
+    object-fit: contain;
+    transition: transform 0.3s;
+}
+
+#btn-menu-secret {
+    width: 60px;      /* Ajuste esse valor para o tamanho real dos seus botões */
+    height: 60px;
+}
+
+
+
